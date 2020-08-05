@@ -1,12 +1,12 @@
 const DEFAULT_BLACKLISTED_URLS = [
   "https://www.reddit.com/*",
-  "https://www.youtube.com/*",
   "https://twitter.com/*",
   "https://www.facebook.com/*",
+  "https://mangadex.org/*",
   "https://www.instagram.com/*",
   "https://www.netflix.com/*"
 ];
-const DEFAULT_WHITELISTED_URLS = [];
+const DEFAULT_WHITELISTED_URLS = ["https://www.youtube.com/*"];
 const DEFAULT_REDIRECT_URL = "https://developer.mozilla.org/en-US/";
 
 const store = {

@@ -44,7 +44,7 @@ function Model() {
       } catch (err) {
         console.log(err);
         console.log(
-          "ERROR! Something went wrong handling new whitelisted tabs"
+          "ERROR! Something went wrong handling new whitelisted tabs. Make sure you have 'tabs' permissions!"
         );
       }
     }
@@ -95,7 +95,7 @@ function Model() {
     } catch (err) {
       console.log(err);
       console.log(
-        "ERROR! Something went wrong accessing tabs. Make sure you have tabs permissions!"
+        "ERROR! Something went wrong accessing tabs. Make sure you have 'tabs' permissions!"
       );
     }
   };
@@ -128,7 +128,15 @@ function Model() {
     browser.tabs.onRemoved.removeListener(handleOnRemovedTab);
   };
 
-  const restoreRedirectedTabs = () => {
+  const refreshBlacklistListener = () => {
+    browser.tabs.onUpdated.removeListener(handleBlacklistedTab);
+    browser.tabs.onUpdated.addListener(handleBlacklistedTab, {
+      urls: store.blacklist,
+      properties: ["status"],
+    });
+  }
+
+  const restoreAllRedirectedTabs = () => {
     const tabIds = Object.keys(this.redirectedTabs);
     tabIds.forEach((tabId) => {
       if (this.redirectedTabs[tabId].length > 0) {
@@ -142,14 +150,20 @@ function Model() {
   };
 
   const restoreTabsAfterURLEntryRemoval = (url) => {
+    url = url.replace(/\*(?=.+)/, ".+");
+    url = url.replace(/\//, "\/");
+    if (url[url.length - 1].localeCompare("*") === 0) {
+      url = url.substring(0, url.length - 1) + ".*";
+    }
+
     const redirectedTabsKeys = Object.keys(this.redirectedTabs);
-    index = redirectedTabsKeys.findIndex((element) => {
-      return this.redirectedTabs[element].localeCompare(url) === 0;
+    const index = redirectedTabsKeys.findIndex((element) => {
+      return new RegExp(url).test(this.redirectedTabs[element]);
     });
 
     if (index > -1) {
       browser.tabs.update(parseInt(redirectedTabsKeys[index]), {
-        url: store.redirectURL,
+        url: this.redirectedTabs[redirectedTabsKeys[index]],
       });
       this.redirectedTabs[redirectedTabsKeys[index]] = "";
     }
@@ -168,7 +182,7 @@ function Model() {
     if (this.isActive === true) {
       this.isActive = false;
       removeAllBlockerListeners();
-      restoreRedirectedTabs();
+      restoreAllRedirectedTabs();
     }
   };
 
@@ -179,18 +193,25 @@ function Model() {
       switch (mode) {
         case "BLACKLIST": {
           store.blacklist.push(url);
+
+          if (this.isActive === true) {
+            refreshBlacklistListener();
+            redirectExistingBlockedURLs();
+          }
           break;
         }
         case "WHITELIST": {
           store.whitelist.push(url);
+
+          if(this.isActive === true) {
+            restoreTabsAfterURLEntryRemoval(url);
+          }
           break;
         }
         default: {
           return false;
         }
       }
-
-      redirectExistingBlockedURLs();
 
       store.saveToLocalStorage();
       return true;
@@ -215,11 +236,15 @@ function Model() {
     try {
       switch (mode) {
         case "BLACKLIST": {
-          let index = store.blacklist.indexOf(url);
+          const index = store.blacklist.indexOf(url);
           if (index < 0) {
             return false;
           }
           store.blacklist.splice(index, 1);
+          if (this.isActive === true) {
+            refreshBlacklistListener();
+            restoreTabsAfterURLEntryRemoval(url);
+          }
           break;
         }
         case "WHITELIST": {
@@ -228,6 +253,10 @@ function Model() {
             return false;
           }
           store.whitelist.splice(index, 1);
+          
+          if (this.isActive === true) {
+            redirectExistingBlockedURLs();
+          }
           break;
         }
         default: {
@@ -235,9 +264,6 @@ function Model() {
         }
       }
 
-      if (this.isActive === true) {
-        restoreTabsAfterURLEntryRemoval(url);
-      }
       store.saveToLocalStorage();
       return true;
     } catch (err) {
