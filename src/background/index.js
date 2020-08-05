@@ -1,17 +1,27 @@
 import Model from "./model.js";
 
 const model = new Model();
-model.activateBlocker();
 
-const endTest = () => {
-  model.deactivateBlocker();
-};
-
-const test = () => {
-  model.removeFromBlockedURLs("BLACKLIST", "https://mangadex.org/*");
-  setTimeout(endTest, 3000);
+const activateBlocker = () => {
+  model.activateBlocker();
 }
 
-setTimeout(test, 2000);
+const deactivateBlocker = () => {
+  model.deactivateBlocker();
+}
+
+const changeRedirectURL = () => {
+  model.changeRedirectURL("twitter.com");
+}
+
+const test = () => {
+  model.deactivateBlocker();
+  console.log(model.changeRedirectURL("twitter.com/"));
+  setTimeout(activateBlocker, 3000);
+  setTimeout(deactivateBlocker, 8000);
+}
+
+model.activateBlocker();
+setTimeout(test, 3000);
 
 console.log(model);

@@ -1,12 +1,13 @@
 const DEFAULT_BLACKLISTED_URLS = [
-  "https://www.reddit.com/*",
-  "https://twitter.com/*",
-  "https://www.facebook.com/*",
-  "https://mangadex.org/*",
-  "https://www.instagram.com/*",
-  "https://www.netflix.com/*"
+  "*://www.reddit.com/*",
+  "*://www.facebook.com/*",
+  "*://mangadex.org/*",
+  "*://www.instagram.com/*",
+  "*://www.netflix.com/*",
+  "*://www.youtube.com/*",
+  "*://twitter.com/*",
 ];
-const DEFAULT_WHITELISTED_URLS = ["https://www.youtube.com/*"];
+const DEFAULT_WHITELISTED_URLS = ["*://www.youtube.com/*"];
 const DEFAULT_REDIRECT_URL = "https://developer.mozilla.org/en-US/";
 
 const store = {
@@ -36,6 +37,6 @@ const store = {
   }
 };
 
-store.fetchLocalStorage();
+// store.fetchLocalStorage();
 
 export default store;
