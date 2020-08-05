@@ -25,7 +25,9 @@ function Model() {
         });
 
         let whiteListedTabs = await browser.tabs.query({
-          url: store.whitelist.concat(formatURLToMatchPattern(store.redirectURL)),
+          url: store.whitelist.concat(
+            formatURLToMatchPattern(store.redirectURL)
+          ),
         });
         whiteListedTabs = whiteListedTabs.map((tab) => {
           return tab.id;
@@ -71,7 +73,9 @@ function Model() {
           let tabs = await browser.tabs.query({ url: "*://*/*" });
 
           let whiteListedTabs = await browser.tabs.query({
-            url: store.whitelist.concat(formatURLToMatchPattern(store.redirectURL)),
+            url: store.whitelist.concat(
+              formatURLToMatchPattern(store.redirectURL)
+            ),
           });
           whiteListedTabs = whiteListedTabs.map((tab) => {
             return tab.id;
@@ -122,7 +126,7 @@ function Model() {
     browser.tabs.onUpdated.removeListener(handleBlacklistedTab);
     browser.tabs.onUpdated.removeListener(handleWhitelistedTab);
     browser.tabs.onRemoved.removeListener(handleOnRemovedTab);
-  }
+  };
 
   const restoreRedirectedTabs = () => {
     const tabIds = Object.keys(this.redirectedTabs);
@@ -133,6 +137,22 @@ function Model() {
         });
       }
     });
+
+    this.redirectedTabs = {};
+  };
+
+  const restoreTabsAfterURLEntryRemoval = (url) => {
+    const redirectedTabsKeys = Object.keys(this.redirectedTabs);
+    index = redirectedTabsKeys.findIndex((element) => {
+      return this.redirectedTabs[element].localeCompare(url) === 0;
+    });
+
+    if (index > -1) {
+      browser.tabs.update(parseInt(redirectedTabsKeys[index]), {
+        url: store.redirectURL,
+      });
+      this.redirectedTabs[redirectedTabsKeys[index]] = "";
+    }
   };
 
   /* METHODS */
@@ -171,7 +191,7 @@ function Model() {
       }
 
       redirectExistingBlockedURLs();
-  
+
       store.saveToLocalStorage();
       return true;
     } catch (err) {
@@ -182,12 +202,52 @@ function Model() {
         }
         default: {
           console.log(err);
-          console.log("Something went wrong trying to save to local storage. Make sure you have 'storage' permissions!")
+          console.log(
+            "Something went wrong trying to save to local storage. Make sure you have 'storage' permissions!"
+          );
         }
       }
       return false;
     }
-  }
+  };
+
+  this.removeFromBlockedURLs = function (mode, url) {
+    try {
+      switch (mode) {
+        case "BLACKLIST": {
+          let index = store.blacklist.indexOf(url);
+          if (index < 0) {
+            return false;
+          }
+          store.blacklist.splice(index, 1);
+          break;
+        }
+        case "WHITELIST": {
+          const index = store.whitelist.indexOf(url);
+          if (index < 0) {
+            return false;
+          }
+          store.whitelist.splice(index, 1);
+          break;
+        }
+        default: {
+          return false;
+        }
+      }
+
+      if (this.isActive === true) {
+        restoreTabsAfterURLEntryRemoval(url);
+      }
+      store.saveToLocalStorage();
+      return true;
+    } catch (err) {
+      console.log(err);
+      console.log(
+        "ERROR! Something went wrong trying to save to local storage. Make sure you have 'storage' permissions!"
+      );
+      return false;
+    }
+  };
 }
 
 export default Model;
