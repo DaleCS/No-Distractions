@@ -191,11 +191,7 @@ function Model() {
       url = formatURLToMatchPattern(url);
       switch (mode) {
         case "BLACKLIST": {
-          if (
-            new RegExp(test).test(
-              store.redirectURL
-            ) === true
-          ) {
+          if (new RegExp(test).test(store.redirectURL) === true) {
             throw "REDIRECT_URL_IS_BLOCKED";
           }
 
@@ -229,7 +225,7 @@ function Model() {
           break;
         }
         case "REDIRECT_URL_IS_BLOCKED": {
-          console.log("ERROR! URL is already blacklisted")
+          console.log("ERROR! URL is already blacklisted");
           break;
         }
         default: {
@@ -310,6 +306,14 @@ function Model() {
         return false;
       }
     }
+  };
+
+  this.getBlacklist = function () {
+    return store.blacklist;
+  };
+
+  this.getWhitelist = function () {
+    return store.whitelist;
   };
 }
 
