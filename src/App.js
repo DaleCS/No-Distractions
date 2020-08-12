@@ -20,68 +20,88 @@ const useStyles = makeStyles({
 const App = () => {
   const [isBlockerActive, setIsBlockerActive] = useState(false);
   const [modelLoadingStatus, setModelLoadingStatus] = useState("LOADING");
-  const [page, setPage] = useState(
-    <Main
-      changePage={changePage}
-      blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-    />
-  );
+  const [path, setPath] = useState("/main");
 
   useEffect(() => {
     getModel(setModelLoadingStatus, setIsBlockerActive);
   }, []);
 
-  const changePage = (path) => {
-    switch (path) {
+  const redirectPath = (newPath) => {
+    switch (newPath) {
       case "/main": {
-        setPage(
-          <Main
-            changePage={changePage}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
-        break;
+        setPath("/main");
+        return;
       }
       case "/blacklist": {
-        setPage(
-          <Blacklist
-            changePage={changePage}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
-        break;
+        setPath("/blacklist");
+        return;
       }
       case "/whitelist": {
-        setPage(
-          <Whitelist
-            changePage={changePage}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
-        break;
+        setPath("/whitelist");
+        return;
       }
       case "/preferences": {
-        setPage(
-          <Preferences
-            changePage={changePage}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
-        break;
+        setPath("/preferences");
+        return;
       }
       default: {
-        setPage(<Main changePage={changePage} />);
+        setPath("/main");
       }
     }
   };
 
-  const render = () => {
+  function renderPathSwitch() {
+    switch (path) {
+      case "/main": {
+        return (
+          <Main
+            redirectPath={redirectPath}
+            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
+          />
+        );
+      }
+      case "/blacklist": {
+        return (
+          <Blacklist
+            redirectPath={redirectPath}
+            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
+          />
+        );
+      }
+      case "/whitelist": {
+        return (
+          <Whitelist
+            redirectPath={redirectPath}
+            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
+          />
+        );
+      }
+      case "/preferences": {
+        return (
+          <Preferences
+            redirectPath={redirectPath}
+            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
+          />
+        );
+      }
+      default: {
+        return (
+          <Main
+            redirectPath={redirectPath}
+            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
+          />
+        );
+      }
+    }
+  }
+
+  const modelStatusSwitch = () => {
     switch (modelLoadingStatus) {
       case "LOADING": {
         return <CircularProgress />;
       }
       case "COMPLETE": {
-        return page;
+        return renderPathSwitch();
       }
       case "ERROR":
       default: {
@@ -91,7 +111,6 @@ const App = () => {
   };
 
   const classes = useStyles();
-
   return (
     <Grid
       container
@@ -100,7 +119,7 @@ const App = () => {
       className={classes.size}
     >
       <Grid item xs={12}>
-        {render()}
+        {modelStatusSwitch()}
       </Grid>
     </Grid>
   );

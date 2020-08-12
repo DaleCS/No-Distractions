@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import {
-  syncActivity,
-  activateBlocker,
-  deactivateBlocker,
-} from "../../services/requests";
+import { activateBlocker, deactivateBlocker } from "../../services/requests";
 
 import {
   makeStyles,
@@ -40,11 +36,9 @@ const useStyles = makeStyles({
 });
 
 const Main = ({
-  changePage,
+  redirectPath,
   blockerStatus: { isBlockerActive, setIsBlockerActive },
 }) => {
-  useEffect(() => {}, []);
-
   const classes = useStyles();
   return (
     <Grid
@@ -78,7 +72,10 @@ const Main = ({
               variant="contained"
               color="primary"
               className={classes.w100}
-              onClick={handleOnClickActivate}
+              onClick={(e) => {
+                e.preventDefault();
+                activateBlocker(setIsBlockerActive);
+              }}
             >
               Activate
             </Button>
@@ -87,7 +84,10 @@ const Main = ({
               variant="contained"
               color="error"
               className={classes.w100}
-              onClick={handleOnClickDeactivate}
+              onClick={(e) => {
+                e.preventDefault();
+                deactivateBlocker(setIsBlockerActive);
+              }}
             >
               Deactivate
             </Button>
@@ -105,7 +105,7 @@ const Main = ({
             <IconButton
               onClick={(e) => {
                 e.preventDefault();
-                changePage("/blacklist");
+                redirectPath("/blacklist");
               }}
             >
               <ListIcon fontSize="large" />
@@ -115,7 +115,7 @@ const Main = ({
             <IconButton
               onClick={(e) => {
                 e.preventDefault();
-                changePage("/preferences");
+                redirectPath("/preferences");
               }}
             >
               <SettingsIcon fontSize="large" />

@@ -5,7 +5,7 @@ import {
   formatRawURLToHTTPMatchPattern,
 } from "./utils";
 
-function Model() {
+const Model = function () {
   this.isActive = false;
   this.mode = "BLACKLIST";
 
@@ -175,7 +175,9 @@ function Model() {
       this.isActive = true;
       redirectExistingBlockedURLs();
       addBlockerListeners();
+      return true;
     }
+    return false;
   };
 
   this.deactivateBlocker = function () {
@@ -183,7 +185,9 @@ function Model() {
       this.isActive = false;
       removeAllBlockerListeners();
       restoreAllRedirectedTabs();
+      return true;
     }
+    return false;
   };
 
   this.addToBlockedURLs = function (mode, url) {
@@ -315,6 +319,6 @@ function Model() {
   this.getWhitelist = function () {
     return store.whitelist;
   };
-}
+};
 
 export default Model;

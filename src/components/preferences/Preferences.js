@@ -1,7 +1,16 @@
 import React from "react";
 
-const Preferences = () => {
-  return <div>Preferences</div>;
+const Preferences = ({ redirectPage }) => {
+  return (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        redirectPage("/main");
+      }}
+    >
+      back
+    </button>
+  );
 };
 
 export default Preferences;

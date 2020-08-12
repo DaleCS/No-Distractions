@@ -4,29 +4,25 @@ export const getModel = async (setModelLoadingStatus, setIsBlockerActive) => {
   try {
     model = await window.browser.extension.getBackgroundPage().model;
     setModelLoadingStatus("COMPLETE");
-    console.log(`getModel() called: ${model.isActive}`);
-    // TODO: Change blocker status to active
+    if (model.isActive === true) {
+      setIsBlockerActive(true);
+    }
   } catch (err) {
-    setModelLoadingStatus("ERROR");
     console.log(err);
+    setModelLoadingStatus("ERROR");
   }
 };
 
-export const syncActivity = (isBlockerActive, setIsBlockerActive) => {
-  if (model.isActive !== isBlockerActive) {
-    console.log(`called ${model.isActive} !== ${isBlockerActive}`);
-    setIsBlockerActive(model.isActive);
+export const activateBlocker = (setIsActiveBlocker) => {
+  if (model && model.activateBlocker() === true) {
+    setIsActiveBlocker(true);
   }
 };
 
-export const activateBlocker = (setIsBlockerActive) => {
-  // model.activateBlocker();
-  setIsBlockerActive(true);
-};
-
-export const deactivateBlocker = (setIsBlockerActive) => {
-  model.deactivateBlocker();
-  syncActivity(false, setIsBlockerActive);
+export const deactivateBlocker = (setIsActiveBlocker) => {
+  if (model && model.deactivateBlocker() === true) {
+    setIsActiveBlocker(false);
+  }
 };
 
 export const getBlacklist = () => {
