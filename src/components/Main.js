@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { activateBlocker, deactivateBlocker } from "../../services/requests";
+import { activateBlocker, deactivateBlocker } from "../services/requests";
+
+import useModelBlockerStatus from "../hooks/useModelBlockerStatus";
 
 import {
   makeStyles,
@@ -35,10 +37,9 @@ const useStyles = makeStyles({
   },
 });
 
-const Main = ({
-  redirectPath,
-  blockerStatus: { isBlockerActive, setIsBlockerActive },
-}) => {
+const Main = ({ redirectPath }) => {
+  const isBlockerActive = useModelBlockerStatus();
+
   const classes = useStyles();
   return (
     <Grid
@@ -74,7 +75,7 @@ const Main = ({
               className={classes.w100}
               onClick={(e) => {
                 e.preventDefault();
-                activateBlocker(setIsBlockerActive);
+                activateBlocker();
               }}
             >
               Activate
@@ -86,7 +87,7 @@ const Main = ({
               className={classes.w100}
               onClick={(e) => {
                 e.preventDefault();
-                deactivateBlocker(setIsBlockerActive);
+                deactivateBlocker();
               }}
             >
               Deactivate

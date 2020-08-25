@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-import Main from "./components/main/Main";
-import Blacklist from "./components/blacklist/Blacklist";
-import Whitelist from "./components/whitelist/Whitelist";
-import Preferences from "./components/preferences/Preferences";
+import { Main, Blacklist, Whitelist, Preferences } from "./components";
 
-import { getModel } from "./services/requests";
+import useModelFetchStatus from "./hooks/useModelFetchStatus";
 
 import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 
@@ -18,13 +15,8 @@ const useStyles = makeStyles({
 });
 
 const App = () => {
-  const [isBlockerActive, setIsBlockerActive] = useState(false);
-  const [modelLoadingStatus, setModelLoadingStatus] = useState("LOADING");
+  const modelLoadingStatus = useModelFetchStatus();
   const [path, setPath] = useState("/main");
-
-  useEffect(() => {
-    getModel(setModelLoadingStatus, setIsBlockerActive);
-  }, []);
 
   const redirectPath = (newPath) => {
     switch (newPath) {
@@ -53,44 +45,19 @@ const App = () => {
   function renderPathSwitch() {
     switch (path) {
       case "/main": {
-        return (
-          <Main
-            redirectPath={redirectPath}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
+        return <Main redirectPath={redirectPath} />;
       }
       case "/blacklist": {
-        return (
-          <Blacklist
-            redirectPath={redirectPath}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
+        return <Blacklist redirectPath={redirectPath} />;
       }
       case "/whitelist": {
-        return (
-          <Whitelist
-            redirectPath={redirectPath}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
+        return <Whitelist redirectPath={redirectPath} />;
       }
       case "/preferences": {
-        return (
-          <Preferences
-            redirectPath={redirectPath}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
+        return <Preferences redirectPath={redirectPath} />;
       }
       default: {
-        return (
-          <Main
-            redirectPath={redirectPath}
-            blockerStatus={{ isBlockerActive, setIsBlockerActive }}
-          />
-        );
+        return <Main redirectPath={redirectPath} />;
       }
     }
   }

@@ -1,27 +1,24 @@
 let model;
 
-export const getModel = async (setModelLoadingStatus, setIsBlockerActive) => {
+export const getModel = async (setModelFetchStatus) => {
   try {
     model = await window.browser.extension.getBackgroundPage().model;
-    setModelLoadingStatus("COMPLETE");
-    if (model.isActive === true) {
-      setIsBlockerActive(true);
-    }
+    setModelFetchStatus("COMPLETE");
   } catch (err) {
     console.log(err);
-    setModelLoadingStatus("ERROR");
+    setModelFetchStatus("ERROR");
   }
 };
 
-export const activateBlocker = (setIsActiveBlocker) => {
-  if (model && model.activateBlocker() === true) {
-    setIsActiveBlocker(true);
+export const activateBlocker = () => {
+  if (model) {
+    model.activateBlocker();
   }
 };
 
-export const deactivateBlocker = (setIsActiveBlocker) => {
-  if (model && model.deactivateBlocker() === true) {
-    setIsActiveBlocker(false);
+export const deactivateBlocker = () => {
+  if (model) {
+    model.deactivateBlocker();
   }
 };
 
@@ -32,4 +29,11 @@ export const getBlacklist = () => {
 export const getWhitelist = () => {
   console.log(model);
   return model.getWhitelist();
+};
+
+export const getModelBlockerStatus = () => {
+  if (model) {
+    return model.isActive;
+  }
+  return false;
 };
