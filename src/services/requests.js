@@ -23,12 +23,17 @@ export const deactivateBlocker = () => {
 };
 
 export const getBlacklist = () => {
-  return model.getBlacklist();
+  if (model) {
+    return model.getBlacklist();
+  }
+  return [];
 };
 
 export const getWhitelist = () => {
-  console.log(model);
-  return model.getWhitelist();
+  if (model) {
+    return model.getWhitelist();
+  }
+  return [];
 };
 
 export const getModelBlockerStatus = () => {
@@ -36,4 +41,18 @@ export const getModelBlockerStatus = () => {
     return model.isActive;
   }
   return false;
+};
+
+export const getModelBlockMode = () => {
+  if (model) {
+    return model.mode;
+  }
+  return false;
+};
+
+export const switchBlockMode = (mode, setBlockMode) => {
+  if (!getModelBlockerStatus()) {
+    model.setBlockMode(mode);
+    setBlockMode(mode);
+  }
 };

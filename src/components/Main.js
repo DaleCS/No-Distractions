@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 
-import { activateBlocker, deactivateBlocker } from "../services/requests";
+import {
+  activateBlocker,
+  deactivateBlocker,
+  switchBlockMode,
+} from "../services/requests";
 
 import useModelBlockerStatus from "../hooks/useModelBlockerStatus";
+import useModelBlockMode from "../hooks/useModelBlockMode";
 
 import {
   makeStyles,
   Grid,
+  Paper,
   ButtonGroup,
   Button,
   IconButton,
@@ -21,24 +27,41 @@ const useStyles = makeStyles({
     boxSizing: "border-box",
     color: "#ffffff",
   },
-  placeholderBox: {
-    width: "50px",
-    height: "50px",
-    border: "1px solid white",
+  paper: {
+    padding: "16px",
+    backgroundColor: "rgb(118, 118, 119, 0.16)",
   },
-  w80: {
-    width: "80%",
-  },
-  w100: {
+  activatorBtn: {
     width: "100%",
   },
-  w50: {
-    width: "50%",
+  iconBtn: {
+    backgroundColor: "#55EFC4",
   },
 });
 
 const Main = ({ redirectPath }) => {
   const isBlockerActive = useModelBlockerStatus();
+  const { blockMode, setBlockMode } = useModelBlockMode();
+
+  const handleOnClickActivate = (e) => {
+    e.preventDefault();
+    activateBlocker();
+  };
+
+  const handleOnClickDeactivate = (e) => {
+    e.preventDefault();
+    deactivateBlocker();
+  };
+
+  const handleOnClickBlacklistMode = (e) => {
+    e.preventDefault();
+    switchBlockMode("BLACKLIST", setBlockMode);
+  };
+
+  const handleOnClickWhitelistMode = (e) => {
+    e.preventDefault();
+    switchBlockMode("WHITELIST", setBlockMode);
+  };
 
   const classes = useStyles();
   return (
@@ -48,82 +71,59 @@ const Main = ({ redirectPath }) => {
       justify="center"
       alignItems="center"
       className={classes.size}
-      spacing={2}
     >
-      <Grid item>
-        <div className={classes.placeholderBox} />
-      </Grid>
-      <Grid
-        container
-        direction="column"
-        justify="flex-start"
-        alignItems="center"
-        spacing={2}
-        item
-      >
-        <Grid item className={classes.w80}>
-          <ButtonGroup color="primary" className={classes.w100}>
-            <Button className={classes.w50}>Blacklist</Button>
-            <Button className={classes.w50}>Whitelist</Button>
-          </ButtonGroup>
-        </Grid>
-        <Grid item className={classes.w80}>
-          {isBlockerActive === false ? (
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.w100}
-              onClick={(e) => {
-                e.preventDefault();
-                activateBlocker();
-              }}
-            >
-              Activate
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="error"
-              className={classes.w100}
-              onClick={(e) => {
-                e.preventDefault();
-                deactivateBlocker();
-              }}
-            >
-              Deactivate
-            </Button>
-          )}
-        </Grid>
-        <Grid
-          container
-          direction="row"
-          justify="space-between"
-          alignItems="center"
-          item
-          className={classes.w80}
-        >
+      <Paper elevation={3} className={classes.paper}>
+        <Grid container direction="column" justify="center" spacing={2}>
           <Grid item>
-            <IconButton
-              onClick={(e) => {
-                e.preventDefault();
-                redirectPath("/blacklist");
-              }}
-            >
-              <ListIcon fontSize="large" />
-            </IconButton>
+            <ButtonGroup color="primary">
+              <Button
+                variant={blockMode === "BLACKLIST" ? "contained" : "outlined"}
+                onClick={handleOnClickBlacklistMode}
+              >
+                BLACKLIST
+              </Button>
+              <Button
+                variant={blockMode === "WHITELIST" ? "contained" : "outlined"}
+                onClick={handleOnClickWhitelistMode}
+              >
+                WHITELIST
+              </Button>
+            </ButtonGroup>
           </Grid>
-          <Grid item>
-            <IconButton
-              onClick={(e) => {
-                e.preventDefault();
-                redirectPath("/preferences");
-              }}
+          <Grid item xs={12}>
+            <Button
+              variant={isBlockerActive ? "contained" : "outlined"}
+              color={isBlockerActive ? "secondary" : "primary"}
+              className={classes.activatorBtn}
+              onClick={
+                isBlockerActive
+                  ? handleOnClickDeactivate
+                  : handleOnClickActivate
+              }
             >
-              <SettingsIcon fontSize="large" />
-            </IconButton>
+              {isBlockerActive ? "DEACTIVATE" : "ACTIVATE"}
+            </Button>
+          </Grid>
+          <Grid
+            container
+            item
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <IconButton color="primary">
+                <ListIcon />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton color="primary">
+                <SettingsIcon />
+              </IconButton>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Paper>
     </Grid>
   );
 };

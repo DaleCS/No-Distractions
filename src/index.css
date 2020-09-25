@@ -5,8 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 325px;
-  height: 520px;
+  width: 288px;
+  height: 512px;
   background-color: #303033;
   overflow: hidden;
 }

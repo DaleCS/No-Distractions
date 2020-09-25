@@ -319,6 +319,28 @@ const Model = function () {
   this.getWhitelist = function () {
     return store.whitelist;
   };
+
+  this.setBlockMode = function (mode) {
+    if (this.isActive === false) {
+      switch (mode) {
+        case "BLACKLIST": {
+          this.mode = "BLACKLIST";
+          break;
+        }
+        case "WHITELIST": {
+          this.mode = "WHITELIST";
+          break;
+        }
+        default: {
+          console.log("ERROR! Invalid mode");
+        }
+      }
+    }
+  };
+
+  this.getMode = function () {
+    return this.mode;
+  };
 };
 
 export default Model;
