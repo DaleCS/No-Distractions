@@ -14,7 +14,7 @@ const store = {
   blacklist: DEFAULT_BLACKLISTED_URLS,
   whitelist: DEFAULT_WHITELISTED_URLS,
   redirectURL: DEFAULT_REDIRECT_URL,
-  fetchLocalStorage: async function() {
+  fetchLocalStorage: async function () {
     try {
       const data = await browser.storage.local.get("no_distractions");
       if (Object.keys(data).length > 0) {
@@ -24,17 +24,19 @@ const store = {
       }
     } catch (err) {
       console.log(err);
-      console.log("ERROR! Something went wrong trying to get local storage data. Make sure your storage permissions!")
+      console.log(
+        "ERROR! Something went wrong trying to get local storage data. Make sure your storage permissions!"
+      );
     }
   },
-  saveToLocalStorage: async function() {
+  saveToLocalStorage: async function () {
     const no_distractions = {
       blacklist: this.blacklist,
       whitelist: this.whitelist,
-      redirectURL: this.redirectURL
-    }
+      redirectURL: this.redirectURL,
+    };
     await browser.storage.local.set(no_distractions);
-  }
+  },
 };
 
 // store.fetchLocalStorage();

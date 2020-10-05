@@ -9,13 +9,13 @@ const Model = function () {
   this.isActive = false;
   this.mode = "BLACKLIST";
 
-  this.redirectedTabs = {};
+  this.redirectedTabs = new Map();
 
   /* CALLBACK FUNCTIONS */
 
   const handleBlacklistedTab = (tabId, changeInfo, tabInfo) => {
     if (changeInfo.status === "complete") {
-      this.redirectedTabs[tabId] = tabInfo.url;
+      this.redirectedTabs.set(tabId, tabInfo.url);
       browser.tabs.update(tabId, { url: store.redirectURL });
     }
   };
@@ -42,7 +42,7 @@ const Model = function () {
         });
 
         tabs.forEach((id) => {
-          this.redirectedTabs[id] = tabInfo.url;
+          this.redirectedTabs.set(id, tabInfo.url);
           browser.tabs.update(id, { url: store.redirectURL });
         });
       } catch (err) {
@@ -55,8 +55,8 @@ const Model = function () {
   };
 
   const handleOnRemovedTab = (tabId, removeInfo) => {
-    if (this.redirectedTabs.tabId) {
-      this.redirectedTabs[tabId] = "";
+    if (this.redirectedTabs.has(tabId)) {
+      this.redirectedTabs.delete(tabId);
     }
   };
 
@@ -68,7 +68,7 @@ const Model = function () {
         case "BLACKLIST": {
           let tabs = await browser.tabs.query({ url: store.blacklist });
           tabs.forEach((tab) => {
-            this.redirectedTabs[tab.id] = tab.url;
+            this.redirectedTabs.set(tab.id, tab.url);
             browser.tabs.update(tab.id, { url: store.redirectURL });
           });
           break;
@@ -90,7 +90,7 @@ const Model = function () {
           });
 
           tabs.forEach((tab) => {
-            this.redirectedTabs[tab.id] = tab.url;
+            this.redirectedTabs.set(tab.id, tab.url);
             browser.tabs.update(tab.id, { url: store.redirectURL });
           });
           break;
@@ -141,31 +141,36 @@ const Model = function () {
   };
 
   const restoreAllRedirectedTabs = () => {
-    const tabIds = Object.keys(this.redirectedTabs);
-    tabIds.forEach((tabId) => {
-      if (this.redirectedTabs[tabId].length > 0) {
-        browser.tabs.update(parseInt(tabId), {
-          url: this.redirectedTabs[tabId],
-        });
-      }
-    });
+    const tabIdsIterator = this.redirectedTabs.keys();
 
-    this.redirectedTabs = {};
+    for (
+      let tabId = tabIdsIterator.next();
+      !tabId.done;
+      tabId = tabIdsIterator.next()
+    ) {
+      browser.tabs.update(tabId.value, {
+        url: this.redirectedTabs.get(tabId.value),
+      });
+    }
+
+    this.redirectedTabs.clear();
   };
 
   const restoreTabsAfterURLEntryRemoval = (url) => {
     url = formatMatchPatternToRegExpString(url);
 
-    const redirectedTabsKeys = Object.keys(this.redirectedTabs);
-    const index = redirectedTabsKeys.findIndex((element) => {
-      return new RegExp(url).test(this.redirectedTabs[element]);
-    });
-
-    if (index > -1) {
-      browser.tabs.update(parseInt(redirectedTabsKeys[index]), {
-        url: this.redirectedTabs[redirectedTabsKeys[index]],
-      });
-      this.redirectedTabs[redirectedTabsKeys[index]] = "";
+    const tabIdsIterator = this.redirectedTabs.keys();
+    for (
+      let tabId = tabIdsIterator.next();
+      !tabId.done;
+      tabId = tabIdsIterator.next()
+    ) {
+      if (new RegExp(url).test(this.redirectedTabs.get(tabId.value))) {
+        browser.tabs.update(tabId.value, {
+          url: this.redirectedTabs.get(tabId.value),
+        });
+        this.redirectedTabs.delete(tabId.value);
+      }
     }
   };
 

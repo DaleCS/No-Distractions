@@ -21,7 +21,7 @@ export const formatRawURLToMatchPattern = (rawURL) => {
 };
 
 export const formatMatchPatternToRegExpString = (matchPattern) => {
-  if (matchPattern.length === 0){
+  if (matchPattern.length === 0) {
     throw "INVALID_URL_STRING";
   }
 
@@ -33,7 +33,7 @@ export const formatMatchPatternToRegExpString = (matchPattern) => {
   return matchPattern;
 };
 
-export const formatRawURLToHTTPMatchPattern= (rawURL) => {
+export const formatRawURLToHTTPMatchPattern = (rawURL) => {
   if (rawURL.length === 0) {
     throw "INVALID_URL_STRING";
   }
@@ -49,4 +49,4 @@ export const formatRawURLToHTTPMatchPattern= (rawURL) => {
   }
 
   return rawURL;
-}
+};
