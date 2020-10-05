@@ -40,17 +40,17 @@ const useStyles = makeStyles({
 });
 
 const Main = ({ redirectPath }) => {
-  const isBlockerActive = useModelBlockerStatus();
+  const { isBlockerActive, setIsBlockerActive } = useModelBlockerStatus();
   const { blockMode, setBlockMode } = useModelBlockMode();
 
   const handleOnClickActivate = (e) => {
     e.preventDefault();
-    activateBlocker();
+    activateBlocker(setIsBlockerActive);
   };
 
   const handleOnClickDeactivate = (e) => {
     e.preventDefault();
-    deactivateBlocker();
+    deactivateBlocker(setIsBlockerActive);
   };
 
   const handleOnClickBlacklistMode = (e) => {

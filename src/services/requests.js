@@ -10,15 +10,15 @@ export const getModel = async (setModelFetchStatus) => {
   }
 };
 
-export const activateBlocker = () => {
-  if (model) {
-    model.activateBlocker();
+export const activateBlocker = (setIsBlockerActive) => {
+  if (model && model.activateBlocker()) {
+    setIsBlockerActive(true);
   }
 };
 
-export const deactivateBlocker = () => {
-  if (model) {
-    model.deactivateBlocker();
+export const deactivateBlocker = (setIsBlockerActive) => {
+  if (model && model.deactivateBlocker()) {
+    setIsBlockerActive(false);
   }
 };
 

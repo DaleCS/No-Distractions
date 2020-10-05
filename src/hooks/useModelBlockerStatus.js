@@ -9,7 +9,7 @@ const useModelBlockerstatus = () => {
     setIsBlockerActive(getModelBlockerStatus);
   });
 
-  return isBlockerActive;
+  return { isBlockerActive, setIsBlockerActive };
 };
 
 export default useModelBlockerstatus;
