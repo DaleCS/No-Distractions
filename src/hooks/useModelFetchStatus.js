@@ -7,7 +7,7 @@ const useModelFetchStatus = () => {
 
   useEffect(() => {
     getModel(setIsFetched);
-  });
+  }, []);
 
   return isFetched;
 };

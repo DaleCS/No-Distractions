@@ -7,7 +7,7 @@ const useModelBlockerstatus = () => {
 
   useEffect(() => {
     setIsBlockerActive(getModelBlockerStatus);
-  });
+  }, []);
 
   return { isBlockerActive, setIsBlockerActive };
 };

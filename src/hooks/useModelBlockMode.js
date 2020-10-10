@@ -7,7 +7,7 @@ const useModelBlockerstatus = () => {
 
   useEffect(() => {
     setBlockMode(getModelBlockMode());
-  });
+  }, []);
 
   return { blockMode, setBlockMode };
 };

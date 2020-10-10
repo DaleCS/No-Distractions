@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Fragment } from "react";
 
 import {
   activateBlocker,
@@ -13,7 +13,8 @@ import {
   makeStyles,
   Grid,
   Paper,
-  ButtonGroup,
+  Tabs,
+  Tab,
   Button,
   IconButton,
 } from "@material-ui/core";
@@ -37,6 +38,9 @@ const useStyles = makeStyles({
   iconBtn: {
     backgroundColor: "#55EFC4",
   },
+  defaultTabs: {
+    color: "#DFE6E9",
+  },
 });
 
 const Main = ({ redirectPath }) => {
@@ -53,14 +57,38 @@ const Main = ({ redirectPath }) => {
     deactivateBlocker(setIsBlockerActive);
   };
 
-  const handleOnClickBlacklistMode = (e) => {
+  const handleOnClickModeChange = (e, newMode) => {
     e.preventDefault();
-    switchBlockMode("BLACKLIST", setBlockMode);
+    switch (newMode) {
+      case 0: {
+        switchBlockMode("BLACKLIST", setBlockMode);
+        break;
+      }
+      case 1: {
+        switchBlockMode("WHITELIST", setBlockMode);
+        break;
+      }
+      default: {
+      }
+    }
   };
 
-  const handleOnClickWhitelistMode = (e) => {
+  const redirectToList = (e) => {
     e.preventDefault();
-    switchBlockMode("WHITELIST", setBlockMode);
+    redirectPath("/list");
+  };
+
+  const decodeModeToTab = () => {
+    switch (blockMode) {
+      case "BLACKLIST": {
+        return 0;
+      }
+      case "WHITELIST": {
+        return 1;
+      }
+      default: {
+      }
+    }
   };
 
   const classes = useStyles();
@@ -75,20 +103,19 @@ const Main = ({ redirectPath }) => {
       <Paper elevation={3} className={classes.paper}>
         <Grid container direction="column" justify="center" spacing={2}>
           <Grid item>
-            <ButtonGroup color="primary">
-              <Button
-                variant={blockMode === "BLACKLIST" ? "contained" : "outlined"}
-                onClick={handleOnClickBlacklistMode}
+            {blockMode.length === 0 ? (
+              <Fragment />
+            ) : (
+              <Tabs
+                value={decodeModeToTab()}
+                indicatorColor="primary"
+                textColor="primary"
+                onChange={handleOnClickModeChange}
               >
-                BLACKLIST
-              </Button>
-              <Button
-                variant={blockMode === "WHITELIST" ? "contained" : "outlined"}
-                onClick={handleOnClickWhitelistMode}
-              >
-                WHITELIST
-              </Button>
-            </ButtonGroup>
+                <Tab label="BLACKLIST" className={classes.defaultTabs} />
+                <Tab label="WHITELIST" className={classes.defaultTabs} />
+              </Tabs>
+            )}
           </Grid>
           <Grid item xs={12}>
             <Button
@@ -112,7 +139,7 @@ const Main = ({ redirectPath }) => {
             alignItems="center"
           >
             <Grid item>
-              <IconButton color="primary">
+              <IconButton color="primary" onClick={redirectToList}>
                 <ListIcon />
               </IconButton>
             </Grid>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Main, Blacklist, Whitelist, Preferences } from "./components";
+import { Main, List, Preferences } from "./components";
 
 import useModelFetchStatus from "./hooks/useModelFetchStatus";
 
@@ -24,12 +24,8 @@ const App = () => {
         setPath("/main");
         return;
       }
-      case "/blacklist": {
-        setPath("/blacklist");
-        return;
-      }
-      case "/whitelist": {
-        setPath("/whitelist");
+      case "/list": {
+        setPath("/list");
         return;
       }
       case "/preferences": {
@@ -47,11 +43,8 @@ const App = () => {
       case "/main": {
         return <Main redirectPath={redirectPath} />;
       }
-      case "/blacklist": {
-        return <Blacklist redirectPath={redirectPath} />;
-      }
-      case "/whitelist": {
-        return <Whitelist redirectPath={redirectPath} />;
+      case "/list": {
+        return <List redirectPath={redirectPath} />;
       }
       case "/preferences": {
         return <Preferences redirectPath={redirectPath} />;
