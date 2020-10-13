@@ -11,6 +11,7 @@ const useStyles = makeStyles({
     width: "100%",
     height: "100vh",
     boxSizing: "border-box",
+    padding: "16px"
   },
 });
 
@@ -65,7 +66,7 @@ const App = () => {
       }
       case "ERROR":
       default: {
-        return <div>FUCK</div>;
+        return <div>Something went wrong. Please reload the extension</div>;
       }
     }
   };

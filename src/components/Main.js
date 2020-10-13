@@ -3,8 +3,9 @@ import React, { Fragment } from "react";
 import {
   activateBlocker,
   deactivateBlocker,
-  switchBlockMode,
 } from "../services/requests";
+
+import ModeSelector from "./reusable/ModeSelector";
 
 import useModelBlockerStatus from "../hooks/useModelBlockerStatus";
 import useModelBlockMode from "../hooks/useModelBlockMode";
@@ -13,8 +14,6 @@ import {
   makeStyles,
   Grid,
   Paper,
-  Tabs,
-  Tab,
   Button,
   IconButton,
 } from "@material-ui/core";
@@ -23,23 +22,20 @@ import SettingsIcon from "@material-ui/icons/Settings";
 
 const useStyles = makeStyles({
   size: {
-    flexGrow: 1,
+    width: "100%",
     height: "100%",
     boxSizing: "border-box",
     color: "#ffffff",
   },
-  paper: {
-    padding: "16px",
-    backgroundColor: "rgb(118, 118, 119, 0.16)",
-  },
-  activatorBtn: {
+  surface: {
     width: "100%",
+    boxSizing: "border-box"
+  },
+  w100: {
+    width: "100%"
   },
   iconBtn: {
     backgroundColor: "#55EFC4",
-  },
-  defaultTabs: {
-    color: "#DFE6E9",
   },
 });
 
@@ -57,38 +53,9 @@ const Main = ({ redirectPath }) => {
     deactivateBlocker(setIsBlockerActive);
   };
 
-  const handleOnClickModeChange = (e, newMode) => {
-    e.preventDefault();
-    switch (newMode) {
-      case 0: {
-        switchBlockMode("BLACKLIST", setBlockMode);
-        break;
-      }
-      case 1: {
-        switchBlockMode("WHITELIST", setBlockMode);
-        break;
-      }
-      default: {
-      }
-    }
-  };
-
   const redirectToList = (e) => {
     e.preventDefault();
     redirectPath("/list");
-  };
-
-  const decodeModeToTab = () => {
-    switch (blockMode) {
-      case "BLACKLIST": {
-        return 0;
-      }
-      case "WHITELIST": {
-        return 1;
-      }
-      default: {
-      }
-    }
   };
 
   const classes = useStyles();
@@ -100,28 +67,20 @@ const Main = ({ redirectPath }) => {
       alignItems="center"
       className={classes.size}
     >
-      <Paper elevation={3} className={classes.paper}>
-        <Grid container direction="column" justify="center" spacing={2}>
+      <Paper elevation={3} className={classes.surface}>
+        <Grid container direction="column" justify="center" alignItems="center" spacing={2}>
           <Grid item>
             {blockMode.length === 0 ? (
               <Fragment />
             ) : (
-              <Tabs
-                value={decodeModeToTab()}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={handleOnClickModeChange}
-              >
-                <Tab label="BLACKLIST" className={classes.defaultTabs} />
-                <Tab label="WHITELIST" className={classes.defaultTabs} />
-              </Tabs>
-            )}
+                <ModeSelector blockMode={blockMode} setBlockMode={setBlockMode} />
+              )}
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} className={classes.w100}>
             <Button
               variant={isBlockerActive ? "contained" : "outlined"}
               color={isBlockerActive ? "secondary" : "primary"}
-              className={classes.activatorBtn}
+              className={classes.w100}
               onClick={
                 isBlockerActive
                   ? handleOnClickDeactivate
