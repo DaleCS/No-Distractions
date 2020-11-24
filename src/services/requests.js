@@ -1,24 +1,33 @@
+import {
+  MODEL_LOAD_COMPLETE,
+  ERROR_LOADING_MODEL,
+  ACTIVATE_BLOCKER,
+  DEACTIVATE_BLOCKER,
+  SET_BLACKLIST_MODE,
+  SET_WHITELIST_MODE,
+} from "../hooks/constants";
+
 let model;
 
-export const getModel = async (setModelFetchStatus) => {
+export const getModel = async (dispatch) => {
   try {
     model = await window.browser.extension.getBackgroundPage().model;
-    setModelFetchStatus("COMPLETE");
+    dispatch(MODEL_LOAD_COMPLETE);
   } catch (err) {
     console.log(err);
-    setModelFetchStatus("ERROR");
+    dispatch(ERROR_LOADING_MODEL);
   }
 };
 
-export const activateBlocker = (setIsBlockerActive) => {
+export const activateBlocker = (dispatch) => {
   if (model && model.activateBlocker()) {
-    setIsBlockerActive(true);
+    dispatch(ACTIVATE_BLOCKER);
   }
 };
 
-export const deactivateBlocker = (setIsBlockerActive) => {
+export const deactivateBlocker = (dispatch) => {
   if (model && model.deactivateBlocker()) {
-    setIsBlockerActive(false);
+    dispatch(DEACTIVATE_BLOCKER);
   }
 };
 
@@ -50,9 +59,20 @@ export const getModelBlockMode = () => {
   return false;
 };
 
-export const switchBlockMode = (mode, setBlockMode) => {
+export const switchBlockMode = (mode, dispatch) => {
   if (!getModelBlockerStatus()) {
     model.setBlockMode(mode);
-    setBlockMode(mode);
+    switch (mode) {
+      case "BLACKLIST": {
+        dispatch(SET_BLACKLIST_MODE);
+        break;
+      }
+      case "WHITELIST": {
+        dispatch(SET_WHITELIST_MODE);
+        break;
+      }
+      default: {
+      }
+    }
   }
 };

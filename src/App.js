@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 
-import { Main, List, Preferences } from "./components";
-
-import useModelFetchStatus from "./hooks/useModelFetchStatus";
-
 import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
 
+import { Main, List, Preferences } from "./components";
+import useModel from "./hooks/useModel";
+
 const useStyles = makeStyles({
-  size: {
+  root: {
     width: "100%",
     height: "100vh",
     boxSizing: "border-box",
-    padding: "16px"
+    padding: "1rem",
   },
 });
 
 const App = () => {
-  const modelLoadingStatus = useModelFetchStatus();
+  const { state: model, dispatch } = useModel();
   const [path, setPath] = useState("/main");
 
   const redirectPath = (newPath) => {
@@ -39,37 +38,52 @@ const App = () => {
     }
   };
 
-  function renderPathSwitch() {
+  const renderPath = () => {
     switch (path) {
       case "/main": {
-        return <Main redirectPath={redirectPath} />;
+        return (
+          <Main redirectPath={redirectPath} model={model} dispatch={dispatch} />
+        );
       }
       case "/list": {
-        return <List redirectPath={redirectPath} />;
+        return (
+          <List redirectPath={redirectPath} model={model} dispatch={dispatch} />
+        );
       }
       case "/preferences": {
-        return <Preferences redirectPath={redirectPath} />;
+        return (
+          <Preferences
+            redirectPath={redirectPath}
+            model={model}
+            dispatch={dispatch}
+          />
+        );
       }
       default: {
-        return <Main redirectPath={redirectPath} />;
-      }
-    }
-  }
-
-  const modelStatusSwitch = () => {
-    switch (modelLoadingStatus) {
-      case "LOADING": {
-        return <CircularProgress />;
-      }
-      case "COMPLETE": {
-        return renderPathSwitch();
-      }
-      case "ERROR":
-      default: {
-        return <div>Something went wrong. Please reload the extension</div>;
+        return (
+          <Main redirectPath={redirectPath} model={model} dispatch={dispatch} />
+        );
       }
     }
   };
+
+  let renderedPath;
+  switch (model.fetchStatus) {
+    case "LOADING": {
+      renderedPath = <CircularProgress />;
+      break;
+    }
+    case "COMPLETE": {
+      renderedPath = renderPath();
+      break;
+    }
+    case "ERROR":
+    default: {
+      renderedPath = (
+        <div>Something went wrong. Please reload the extension</div>
+      );
+    }
+  }
 
   const classes = useStyles();
   return (
@@ -77,10 +91,10 @@ const App = () => {
       container
       justify="center"
       alignItems="stretch"
-      className={classes.size}
+      className={classes.root}
     >
       <Grid item xs={12}>
-        {modelStatusSwitch()}
+        {renderedPath}
       </Grid>
     </Grid>
   );

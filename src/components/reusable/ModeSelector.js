@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 
 import { switchBlockMode } from "../../services/requests";
 
 import { Tabs, Tab } from "@material-ui/core";
 
-const ModeSelector = ({ blockMode, setBlockMode }) => {
+const ModeSelector = ({ mode, dispatch }) => {
   const decodeModeToTab = () => {
-    switch (blockMode) {
+    switch (mode) {
       case "BLACKLIST": {
         return 0;
       }
@@ -22,11 +22,11 @@ const ModeSelector = ({ blockMode, setBlockMode }) => {
     e.preventDefault();
     switch (newMode) {
       case 0: {
-        switchBlockMode("BLACKLIST", setBlockMode);
+        switchBlockMode("BLACKLIST", dispatch);
         break;
       }
       case 1: {
-        switchBlockMode("WHITELIST", setBlockMode);
+        switchBlockMode("WHITELIST", dispatch);
         break;
       }
       default: {
@@ -44,7 +44,7 @@ const ModeSelector = ({ blockMode, setBlockMode }) => {
       <Tab label="BLACKLIST" />
       <Tab label="WHITELIST" />
     </Tabs>
-  )
-}
+  );
+};
 
 export default ModeSelector;
