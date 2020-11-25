@@ -1,12 +1,21 @@
 import React, { useEffect, useReducer } from "react";
 
-import { ACTIVATE_BLOCKER, DEACTIVATE_BLOCKER } from "./constants";
-import { getModel, getModelBlockerStatus } from "../services/requests";
+import {
+  ACTIVATE_BLOCKER,
+  DEACTIVATE_BLOCKER,
+  SET_BLACKLIST_MODE,
+  SET_WHITELIST_MODE,
+} from "./constants";
+import {
+  getModel,
+  getModelBlockerStatus,
+  getModelBlockMode,
+} from "../services/requests";
 
 const initialState = {
   fetchStatus: "LOADING",
   isActive: false,
-  mode: "BLACKLIST",
+  mode: "",
 };
 
 const reducer = (state, action) => {
@@ -39,12 +48,27 @@ const useModel = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    getModel(dispatch);
-    if (state.fetchStatus.localeCompare("LOADING") != 0) {
+    if (state.fetchStatus.localeCompare("LOADING") === 0) {
+      getModel(dispatch);
+    } else {
       if (getModelBlockerStatus()) {
         dispatch(ACTIVATE_BLOCKER);
       } else {
         dispatch(DEACTIVATE_BLOCKER);
+      }
+
+      switch (getModelBlockMode()) {
+        case "BLACKLIST": {
+          dispatch(SET_BLACKLIST_MODE);
+          break;
+        }
+        case "WHITELIST": {
+          dispatch(SET_WHITELIST_MODE);
+          break;
+        }
+        default: {
+          console.error("ERROR: Could not retrieve block mode");
+        }
       }
     }
   }, [state.fetchStatus]);

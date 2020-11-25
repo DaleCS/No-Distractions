@@ -4,7 +4,7 @@ import { switchBlockMode } from "../../services/requests";
 
 import { Tabs, Tab } from "@material-ui/core";
 
-const ModeSelector = ({ mode, dispatch }) => {
+const ModeSelector = ({ mode, dispatch, className }) => {
   const decodeModeToTab = () => {
     switch (mode) {
       case "BLACKLIST": {
@@ -40,6 +40,7 @@ const ModeSelector = ({ mode, dispatch }) => {
       indicatorColor="primary"
       textColor="primary"
       onChange={handleOnClickModeChange}
+      className={className}
     >
       <Tab label="BLACKLIST" />
       <Tab label="WHITELIST" />
