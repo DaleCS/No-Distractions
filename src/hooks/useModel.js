@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import {
   ACTIVATE_BLOCKER,
@@ -40,6 +40,9 @@ const reducer = (state, action) => {
     }
     case "ERROR_LOADING_MODEL": {
       return { ...state, fetchStatus: "ERROR" };
+    }
+    default: {
+      return;
     }
   }
 };

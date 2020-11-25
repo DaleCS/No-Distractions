@@ -1,0 +1,102 @@
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  justify-content: stretch;
+  align-content: flex-end;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.surface {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  row-gap: 1rem;
+  justify-content: stretch;
+  align-content: flex-end;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  transition: border-color 250ms ease, background-color 250ms ease;
+  box-sizing: border-box;
+}
+
+.surface.inactive {
+  background-color: rgba(85, 239, 196, 0.05);
+  border: 1px solid #55efc4;
+}
+
+.surface.active {
+  background-color: rgba(231, 76, 60, 0.05);
+  border: 1px solid #e74c3c;
+}
+
+.surface__switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 0;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 250ms ease, background-color 250ms ease;
+}
+
+.surface__switch.inactive {
+  background-color: rgba(85, 239, 196, 0.08);
+  border: 1px solid #55efc4;
+  color: #55efc4;
+}
+
+.surface__switch.active {
+  background-color: rgba(231, 76, 60, 0.08);
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+}
+
+.surface__switch.inactive:hover {
+  background-color: rgba(85, 239, 196, 0.12);
+}
+
+.surface__switch.active:hover {
+  background-color: rgba(231, 76, 60, 0.12);
+}
+
+.surface__options-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.surface__options-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 250ms ease;
+}
+
+.surface__options-btn.inactive:hover {
+  background-color: rgba(85, 239, 196, 0.08);
+}
+
+.surface__options-btn.active:hover {
+  background-color: rgba(231, 76, 60, 0.08);
+}
+
+.surface__options-btn__icon {
+  width: 20px;
+  object-fit: contain;
+}
+
+.border {
+  border: 1px solid white;
+}
