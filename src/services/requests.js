@@ -76,3 +76,17 @@ export const switchBlockMode = (mode, dispatch) => {
     }
   }
 };
+
+export const addURL = (url) => {
+  if (model && url && url.length > 0) {
+    return model.addToBlockedURLs(model.mode, url);
+  }
+  return false;
+};
+
+export const removeURL = (url) => {
+  if (model && url && url.length > 0) {
+    return model.removeFromBlockedURLs(model.mode, url);
+  }
+  return false;
+};

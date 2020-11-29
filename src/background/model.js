@@ -30,7 +30,7 @@ const Model = function () {
 
         let whiteListedTabs = await browser.tabs.query({
           url: store.whitelist.concat(
-            formatURLToMatchPattern(store.redirectURL)
+            formatRawURLToMatchPattern(store.redirectURL)
           ),
         });
         whiteListedTabs = whiteListedTabs.map((tab) => {
@@ -78,7 +78,7 @@ const Model = function () {
 
           let whiteListedTabs = await browser.tabs.query({
             url: store.whitelist.concat(
-              formatURLToMatchPattern(store.redirectURL)
+              formatRawURLToMatchPattern(store.redirectURL)
             ),
           });
           whiteListedTabs = whiteListedTabs.map((tab) => {
@@ -197,10 +197,14 @@ const Model = function () {
 
   this.addToBlockedURLs = function (mode, url) {
     try {
-      url = formatURLToMatchPattern(url);
+      url = formatRawURLToMatchPattern(url);
       switch (mode) {
         case "BLACKLIST": {
-          if (new RegExp(test).test(store.redirectURL) === true) {
+          if (
+            new RegExp(formatMatchPatternToRegExpString(url)).test(
+              store.redirectURL
+            ) === true
+          ) {
             throw "REDIRECT_URL_IS_BLOCKED";
           }
 

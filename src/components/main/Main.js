@@ -2,7 +2,7 @@ import React from "react";
 
 import { activateBlocker, deactivateBlocker } from "../../services/requests";
 
-import ModeSelector from "../reusable/ModeSelector";
+import { ModeSelector } from "../";
 
 import "./Main.css";
 
