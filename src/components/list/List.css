@@ -1,6 +1,6 @@
 .list {
   display: grid;
-  grid-template-rows: auto 392px auto;
+  grid-template-rows: auto 400px auto;
   grid-template-columns: 1fr;
   justify-items: flex-start;
   row-gap: 0.5rem;
@@ -58,7 +58,6 @@
 
 .desc__text {
   font-size: 0.75rem;
-  line-height: 0.875rem;
 }
 
 .url-list {

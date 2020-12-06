@@ -9,6 +9,7 @@ body {
   height: 512px;
   background-color: #303033;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 code {

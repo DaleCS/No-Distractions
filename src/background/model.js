@@ -295,7 +295,25 @@ const Model = function () {
     }
   };
 
-  this.changeRedirectURL = function (url) {
+  this.setBlockMode = function (mode) {
+    if (this.isActive === false) {
+      switch (mode) {
+        case "BLACKLIST": {
+          this.mode = "BLACKLIST";
+          break;
+        }
+        case "WHITELIST": {
+          this.mode = "WHITELIST";
+          break;
+        }
+        default: {
+          console.log("ERROR! Invalid mode");
+        }
+      }
+    }
+  };
+
+  this.setRedirectURL = function (url) {
     if (this.isActive === false) {
       try {
         const formattedURL = formatRawURLToHTTPMatchPattern(url);
@@ -315,10 +333,11 @@ const Model = function () {
         }
       } catch (err) {
         console.log(err);
-        console.log("ERROR! URL is invalid");
+        console.error("ERROR: New redirect URL entered is invalid");
         return false;
       }
     }
+    return false;
   };
 
   this.getBlacklist = function () {
@@ -329,26 +348,12 @@ const Model = function () {
     return store.whitelist;
   };
 
-  this.setBlockMode = function (mode) {
-    if (this.isActive === false) {
-      switch (mode) {
-        case "BLACKLIST": {
-          this.mode = "BLACKLIST";
-          break;
-        }
-        case "WHITELIST": {
-          this.mode = "WHITELIST";
-          break;
-        }
-        default: {
-          console.log("ERROR! Invalid mode");
-        }
-      }
-    }
-  };
-
   this.getMode = function () {
     return this.mode;
+  };
+
+  this.getRedirectURL = function () {
+    return store.redirectURL;
   };
 };
 

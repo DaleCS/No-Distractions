@@ -90,3 +90,17 @@ export const removeURL = (url) => {
   }
   return false;
 };
+
+export const getRedirectURL = () => {
+  if (model) {
+    return model.getRedirectURL();
+  }
+  return "";
+};
+
+export const setRedirectURL = (url) => {
+  if (url && url.length > 0) {
+    return model.setRedirectURL(url);
+  }
+  return false;
+};
