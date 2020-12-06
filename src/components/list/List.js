@@ -5,7 +5,7 @@ import {
   getWhitelist,
   addURL,
   removeURL,
-} from "../../services/requests";
+} from "../../controllers/requests";
 
 import "./List.css";
 

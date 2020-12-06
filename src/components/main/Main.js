@@ -1,6 +1,6 @@
 import React from "react";
 
-import { activateBlocker, deactivateBlocker } from "../../services/requests";
+import { activateBlocker, deactivateBlocker } from "../../controllers/requests";
 
 import { ModeSelector } from "../";
 

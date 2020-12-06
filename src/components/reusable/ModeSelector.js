@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 
 import "./ModeSelector.css";
 
-import { switchBlockMode } from "../../services/requests";
+import { switchBlockMode } from "../../controllers/requests";
 
 const ModeSelector = ({ model, dispatch, className }) => {
   const handleOnClickBlacklist = (e) => {

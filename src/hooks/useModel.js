@@ -10,7 +10,7 @@ import {
   getModel,
   getModelBlockerStatus,
   getModelBlockMode,
-} from "../services/requests";
+} from "../controllers/requests";
 
 const initialState = {
   fetchStatus: "LOADING",
