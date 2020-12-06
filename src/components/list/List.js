@@ -43,6 +43,12 @@ const NewURLField = ({ isActive, handleOnAddURL }) => {
     setUrlField(e.target.value);
   };
 
+  const handleOnKeyDown = (e) => {
+    if (e.keyCode === 13 && handleOnAddURL(urlField)) {
+      setUrlField("");
+    }
+  };
+
   const handleOnClickAdd = (e) => {
     e.preventDefault();
     if (handleOnAddURL(urlField)) {
@@ -58,6 +64,7 @@ const NewURLField = ({ isActive, handleOnAddURL }) => {
         className="new-url-field__field"
         value={urlField}
         onChange={handleOnChange}
+        onKeyDown={handleOnKeyDown}
       />
       <img
         src={isActive ? ActiveAddIcon : InactiveAddIcon}
@@ -69,22 +76,25 @@ const NewURLField = ({ isActive, handleOnAddURL }) => {
   );
 };
 
+const fetchListSwitch = (mode) => {
+  switch (mode) {
+    case "BLACKLIST": {
+      return [...getBlacklist()];
+    }
+    case "WHITELIST": {
+      return [...getWhitelist()];
+    }
+    default: {
+      return [];
+    }
+  }
+};
+
 const List = ({ redirectPath, model, dispatch }) => {
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(fetchListSwitch(model.mode));
 
   useEffect(() => {
-    switch (model.mode) {
-      case "BLACKLIST": {
-        setList([...getBlacklist()]);
-        break;
-      }
-      case "WHITELIST": {
-        setList([...getWhitelist()]);
-        break;
-      }
-      default: {
-      }
-    }
+    setList(fetchListSwitch(model.mode));
   }, [model.mode]);
 
   const handleOnClickBack = (e) => {
@@ -93,39 +103,23 @@ const List = ({ redirectPath, model, dispatch }) => {
   };
 
   const handleOnAddURL = (url) => {
-    if (addURL(url)) {
-      switch (model.mode) {
-        case "BLACKLIST": {
-          setList([...getBlacklist()]);
-          return true;
-        }
-        case "WHITELIST": {
-          setList([...getWhitelist()]);
-          return true;
-        }
-        default: {
-          return false;
-        }
-      }
+    if (
+      addURL(url) &&
+      (model.mode === "BLACKLIST" || model.mode === "WHITELIST")
+    ) {
+      setList(fetchListSwitch(model.mode));
+      return true;
     }
     return false;
   };
 
   const handleOnRemoveUrl = (url) => {
-    if (removeURL(url)) {
-      switch (model.mode) {
-        case "BLACKLIST": {
-          setList([...getBlacklist()]);
-          return true;
-        }
-        case "WHITELIST": {
-          setList([...getWhitelist()]);
-          return true;
-        }
-        default: {
-          return false;
-        }
-      }
+    if (
+      removeURL(url) &&
+      (model.mode === "BLACKLIST" || model.mode === "WHITELIST")
+    ) {
+      setList(fetchListSwitch(model.mode));
+      return true;
     }
     return false;
   };

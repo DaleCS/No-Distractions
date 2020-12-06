@@ -1,6 +1,6 @@
 .list {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 392px auto;
   grid-template-columns: 1fr;
   justify-items: flex-start;
   row-gap: 0.5rem;
@@ -10,11 +10,14 @@
 
 .desc-and-url-list {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
   grid-template-columns: 1fr;
+  min-width: 0;
   width: 100%;
   transition: background-color 250ms ease, border 250ms ease;
   border-radius: 0.25rem;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .inactive .desc-and-url-list {
@@ -62,8 +65,9 @@
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 1fr;
+  grid-auto-flow: row;
   align-content: flex-start;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 .back-btn {
