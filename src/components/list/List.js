@@ -14,7 +14,7 @@ import ActiveRemoveIcon from "./remove-active.png";
 import InactiveAddIcon from "./add-inactive.png";
 import ActiveAddIcon from "./add-active.png";
 
-import { ModeSelector } from "../";
+import { ModeSelector, BackButton } from "../";
 
 const URL = ({ url, isActive, handleOnRemoveUrl }) => {
   const handleOnClickRemove = (e) => {
@@ -169,9 +169,7 @@ const List = ({ redirectPath, model, dispatch }) => {
           {listMarkup}
         </div>
       </div>
-      <div className={"back-btn"} onClick={handleOnClickBack}>
-        BACK
-      </div>
+      <BackButton onClick={handleOnClickBack} />
     </div>
   );
 };
