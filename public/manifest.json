@@ -10,7 +10,7 @@
     "default_title": "No Distractions"
   },
 
-  "permissions": ["tabs", "storage"],
+  "permissions": ["webNavigation", "tabs", "storage"],
 
   "background": {
     "scripts": ["./background.js"]

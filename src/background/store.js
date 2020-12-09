@@ -1,13 +1,47 @@
 const DEFAULT_BLACKLISTED_URLS = [
-  "*://www.reddit.com/*",
-  "*://www.facebook.com/*",
-  "*://mangadex.org/*",
-  "*://www.instagram.com/*",
-  "*://www.netflix.com/*",
-  "*://www.youtube.com/*",
-  "*://twitter.com/*",
+  {
+    inputURL: "https://www.reddit.com/*",
+    regExp: "^(https:\\/\\/www\\.reddit\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://www.reddit.com/*",
+  },
+  {
+    inputURL: "https://www.facebook.com/*",
+    regExp: "^(https:\\/\\/www\\.facebook\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://www.facebook.com/*",
+  },
+  {
+    inputURL: "https://mangadex.org/*",
+    regExp: "^(https:\\/\\/mangadex\\.org\\/.*\\/{0,1})$",
+    matchPattern: "https://mangadex.org/*",
+  },
+  {
+    inputURL: "https://www.instagram.com/*",
+    regExp: "^(https:\\/\\/www\\.instagram\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://www.instagram.com/*",
+  },
+  {
+    inputURL: "https://www.netflix.com/*",
+    regExp: "^(https:\\/\\/www\\.netflix\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://www.netflix.com/*",
+  },
+  {
+    inputURL: "https://www.youtube.com/*",
+    regExp: "^(https:\\/\\/www\\.youtube\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://www.youtube.com/*",
+  },
+  {
+    inputURL: "https://twitter.com/*",
+    regExp: "^(https:\\/\\/twitter\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://twitter.com/*",
+  },
 ];
-const DEFAULT_WHITELISTED_URLS = ["*://www.youtube.com/*"];
+const DEFAULT_WHITELISTED_URLS = [
+  {
+    inputURL: "https://www.youtube.com/*",
+    regExp: "^(https:\\/\\/www\\.youtube\\.com\\/.*\\/{0,1})$",
+    matchPattern: "https://www.youtube.com/*",
+  },
+];
 const DEFAULT_REDIRECT_URL = "https://developer.mozilla.org/en-US/";
 
 const store = {

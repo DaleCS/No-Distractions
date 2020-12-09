@@ -50,3 +50,59 @@ export const formatRawURLToHTTPMatchPattern = (rawURL) => {
 
   return rawURL;
 };
+
+export const formatInputURLToRegExp = (inputURL) => {
+  let resultingRegExp = "";
+
+  if (new RegExp(/\/$/).test(inputURL)) {
+    inputURL = inputURL.substring(0, inputURL.length - 1);
+  }
+
+  const protocolRegExp = new RegExp("^[^:]+:(?:\\/\\/)", "i");
+  if (!protocolRegExp.test(inputURL)) {
+    resultingRegExp += "^[^:]+:(?:\\/\\/)";
+  }
+
+  inputURL = inputURL.replace(/\//g, "\\/");
+  inputURL = inputURL.replace(/\./g, "\\.");
+  inputURL = inputURL.replace(/\+/g, "\\+");
+  inputURL = inputURL.replace(/\[/g, "\\[");
+  inputURL = inputURL.replace(/\]/g, "\\]");
+  inputURL = inputURL.replace(/\{/g, "\\{");
+  inputURL = inputURL.replace(/\}/g, "\\}");
+  inputURL = inputURL.replace(/\(/g, "\\(");
+  inputURL = inputURL.replace(/\)/g, "\\)");
+  inputURL = inputURL.replace(/\?/g, "\\?");
+
+  if (new RegExp(/\*$/).test(inputURL)) {
+    inputURL = inputURL.substring(0, inputURL.length - 1) + ".*";
+  }
+
+  resultingRegExp += inputURL + "\\/{0,1}";
+
+  resultingRegExp = `^(${resultingRegExp})$`;
+
+  return resultingRegExp;
+};
+
+export const getArrayOfURLRegExp = (list) => {
+  return list.map((url) => {
+    if (url && url.regExp) {
+      return {
+        urlMatches: url.regExp,
+      };
+    } else {
+      throw "ERROR: Invalid URL list!";
+    }
+  });
+};
+
+export const getArrayofURLMatchPatterns = (list) => {
+  return list.map((url) => {
+    if (url && url.matchPattern) {
+      return url.matchPattern;
+    } else {
+      throw "ERROR: Invalid URL list!";
+    }
+  });
+};

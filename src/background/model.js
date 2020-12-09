@@ -3,6 +3,9 @@ import {
   formatRawURLToMatchPattern,
   formatMatchPatternToRegExpString,
   formatRawURLToHTTPMatchPattern,
+  formatInputURLToRegExp,
+  getArrayOfURLRegExp,
+  getArrayofURLMatchPatterns,
 } from "./utils";
 
 const Model = function () {
@@ -10,54 +13,44 @@ const Model = function () {
   this.mode = "BLACKLIST";
 
   this.redirectedTabs = new Map();
+  this.redirectedBuffer = new Map();
 
   /* CALLBACK FUNCTIONS */
 
-  const handleBlacklistedTab = (tabId, changeInfo, tabInfo) => {
-    if (changeInfo.status === "complete") {
-      this.redirectedTabs.set(tabId, tabInfo.url);
-      browser.tabs.update(tabId, { url: store.redirectURL });
+  const handleBlacklistedTab = (details) => {
+    this.redirectedTabs.set(details.tabId, details.url);
+    browser.tabs.update(details.tabId, { url: store.redirectURL });
+  };
+
+  const handleWhitelistedTab = (details) => {
+    const isWhitelisted = store.whitelist.some((url) => {
+      return new RegExp(url.regExp).test(details.url);
+    });
+    const isRedirectURL = new RegExp(
+      formatInputURLToRegExp(store.redirectURL)
+    ).test(details.url);
+    const isPreviouslyRedirected = this.redirectedTabs.has(details.tabId);
+    if (!isWhitelisted && !isRedirectURL) {
+      this.redirectedTabs.set(details.tabId, details.url);
+      browser.tabs.update(details.tabId, { url: store.redirectURL });
+    } else if (
+      (isRedirectURL && !isPreviouslyRedirected) ||
+      (isWhitelisted && isPreviouslyRedirected)
+    ) {
+      this.redirectedTabs.delete(details.tabId);
     }
   };
 
-  const handleWhitelistedTab = async (tabId, changeInfo, tabInfo) => {
-    if (changeInfo.status === "complete") {
-      try {
-        let tabs = await browser.tabs.query({ url: "*://*/*" });
-        tabs = tabs.map((tab) => {
-          return tab.id;
-        });
-
-        let whiteListedTabs = await browser.tabs.query({
-          url: store.whitelist.concat(
-            formatRawURLToMatchPattern(store.redirectURL)
-          ),
-        });
-        whiteListedTabs = whiteListedTabs.map((tab) => {
-          return tab.id;
-        });
-
-        tabs = tabs.filter((id) => {
-          return !whiteListedTabs.includes(id);
-        });
-
-        tabs.forEach((id) => {
-          this.redirectedTabs.set(id, tabInfo.url);
-          browser.tabs.update(id, { url: store.redirectURL });
-        });
-      } catch (err) {
-        console.log(err);
-        console.log(
-          "ERROR! Something went wrong handling new whitelisted tabs. Make sure you have 'tabs' permissions!"
-        );
-      }
+  const handleNormalRedirection = (details) => {
+    if (
+      !new RegExp(formatInputURLToRegExp(store.redirectURL)).test(details.url)
+    ) {
+      this.redirectedTabs.delete(details.tabId);
     }
   };
 
   const handleOnRemovedTab = (tabId, removeInfo) => {
-    if (this.redirectedTabs.has(tabId)) {
-      this.redirectedTabs.delete(tabId);
-    }
+    this.redirectedTabs.delete(tabId);
   };
 
   /* HELPER FUNCTIONS */
@@ -66,7 +59,9 @@ const Model = function () {
     try {
       switch (this.mode) {
         case "BLACKLIST": {
-          let tabs = await browser.tabs.query({ url: store.blacklist });
+          let tabs = await browser.tabs.query({
+            url: getArrayofURLMatchPatterns(store.blacklist),
+          });
           tabs.forEach((tab) => {
             this.redirectedTabs.set(tab.id, tab.url);
             browser.tabs.update(tab.id, { url: store.redirectURL });
@@ -77,7 +72,7 @@ const Model = function () {
           let tabs = await browser.tabs.query({ url: "*://*/*" });
 
           let whiteListedTabs = await browser.tabs.query({
-            url: store.whitelist.concat(
+            url: getArrayofURLMatchPatterns(store.whitelist).concat(
               formatRawURLToMatchPattern(store.redirectURL)
             ),
           });
@@ -98,7 +93,7 @@ const Model = function () {
       }
     } catch (err) {
       console.log(err);
-      console.log(
+      console.error(
         "ERROR! Something went wrong accessing tabs. Make sure you have 'tabs' permissions!"
       );
     }
@@ -107,17 +102,17 @@ const Model = function () {
   const addBlockerListeners = () => {
     switch (this.mode) {
       case "BLACKLIST": {
-        browser.tabs.onUpdated.addListener(handleBlacklistedTab, {
-          urls: store.blacklist,
-          properties: ["status"],
-        });
+        browser.webNavigation.onBeforeNavigate.addListener(
+          handleBlacklistedTab,
+          { url: getArrayOfURLRegExp(store.blacklist) }
+        );
+        browser.webNavigation.onCompleted.addListener(handleNormalRedirection);
         break;
       }
       case "WHITELIST": {
-        browser.tabs.onUpdated.addListener(handleWhitelistedTab, {
-          urls: ["*://*/*"],
-          properties: ["status"],
-        });
+        browser.webNavigation.onBeforeNavigate.addListener(
+          handleWhitelistedTab
+        );
         break;
       }
       default: {
@@ -127,16 +122,16 @@ const Model = function () {
   };
 
   const removeAllBlockerListeners = () => {
-    browser.tabs.onUpdated.removeListener(handleBlacklistedTab);
-    browser.tabs.onUpdated.removeListener(handleWhitelistedTab);
+    browser.webNavigation.onBeforeNavigate.removeListener(handleBlacklistedTab);
+    browser.webNavigation.onBeforeNavigate.removeListener(handleWhitelistedTab);
+    browser.webNavigation.onCompleted.removeListener(handleNormalRedirection);
     browser.tabs.onRemoved.removeListener(handleOnRemovedTab);
   };
 
   const refreshBlacklistListener = () => {
-    browser.tabs.onUpdated.removeListener(handleBlacklistedTab);
-    browser.tabs.onUpdated.addListener(handleBlacklistedTab, {
-      urls: store.blacklist,
-      properties: ["status"],
+    browser.webNavigation.onBeforeNavigate.removeListener(handleBlacklistedTab);
+    browser.webNavigation.onBeforeNavigate.addListener(handleBlacklistedTab, {
+      url: getArrayOfURLRegExp(store.blacklist),
     });
   };
 
@@ -157,7 +152,7 @@ const Model = function () {
   };
 
   const restoreTabsAfterURLEntryRemoval = (url) => {
-    url = formatMatchPatternToRegExpString(url);
+    url = formatInputURLToRegExp(url);
 
     const tabIdsIterator = this.redirectedTabs.keys();
     for (
@@ -175,6 +170,7 @@ const Model = function () {
   };
 
   /* METHODS */
+
   this.activateBlocker = function () {
     if (this.isActive === false) {
       this.isActive = true;
@@ -197,18 +193,19 @@ const Model = function () {
 
   this.addToBlockedURLs = function (mode, url) {
     try {
-      url = formatRawURLToMatchPattern(url);
+      const regExp = formatInputURLToRegExp(url);
+      const matchPattern = formatRawURLToMatchPattern(url);
       switch (mode) {
         case "BLACKLIST": {
-          if (
-            new RegExp(formatMatchPatternToRegExpString(url)).test(
-              store.redirectURL
-            ) === true
-          ) {
+          if (new RegExp(regExp).test(store.redirectURL) === true) {
             throw "REDIRECT_URL_IS_BLOCKED";
           }
 
-          store.blacklist.push(url);
+          store.blacklist.push({
+            inputURL: url,
+            regExp,
+            matchPattern,
+          });
 
           if (this.isActive === true) {
             refreshBlacklistListener();
@@ -217,7 +214,11 @@ const Model = function () {
           break;
         }
         case "WHITELIST": {
-          store.whitelist.push(url);
+          store.whitelist.push({
+            inputURL: url,
+            regExp,
+            matchPattern,
+          });
 
           if (this.isActive === true) {
             restoreTabsAfterURLEntryRemoval(url);
@@ -234,16 +235,16 @@ const Model = function () {
     } catch (err) {
       switch (err) {
         case "INVALID_URL_STRING": {
-          console.log("ERROR! URL string is not valid");
+          console.error("ERROR! URL string is not valid");
           break;
         }
         case "REDIRECT_URL_IS_BLOCKED": {
-          console.log("ERROR! URL is already blacklisted");
+          console.error("ERROR! URL is already blacklisted");
           break;
         }
         default: {
           console.log(err);
-          console.log(
+          console.error(
             "Something went wrong trying to save to local storage. Make sure you have 'storage' permissions!"
           );
         }
@@ -256,7 +257,9 @@ const Model = function () {
     try {
       switch (mode) {
         case "BLACKLIST": {
-          const index = store.blacklist.indexOf(url);
+          const index = store.blacklist.findIndex((el) => {
+            return el.inputURL.localeCompare(url) === 0;
+          });
           if (index < 0) {
             return false;
           }
@@ -268,7 +271,9 @@ const Model = function () {
           break;
         }
         case "WHITELIST": {
-          const index = store.whitelist.indexOf(url);
+          const index = store.whitelist.findIndex((el) => {
+            return el.inputURL.localeCompare(url) === 0;
+          });
           if (index < 0) {
             return false;
           }
@@ -288,7 +293,7 @@ const Model = function () {
       return true;
     } catch (err) {
       console.log(err);
-      console.log(
+      console.error(
         "ERROR! Something went wrong trying to save to local storage. Make sure you have 'storage' permissions!"
       );
       return false;
@@ -307,7 +312,7 @@ const Model = function () {
           break;
         }
         default: {
-          console.log("ERROR! Invalid mode");
+          console.error("ERROR! Invalid mode");
         }
       }
     }
@@ -319,16 +324,16 @@ const Model = function () {
         const formattedURL = formatRawURLToHTTPMatchPattern(url);
         const isNotBlocked = store.blacklist.every((blacklistURL) => {
           return (
-            new RegExp(formatMatchPatternToRegExpString(blacklistURL)).test(
-              formattedURL
-            ) === false
+            new RegExp(
+              formatMatchPatternToRegExpString(blacklistURL.matchPattern)
+            ).test(formattedURL) === false
           );
         });
 
         if (isNotBlocked === false) {
           return false;
         } else {
-          store.redirectURL = formattedURL;
+          store.redirectURL = url;
           return true;
         }
       } catch (err) {
@@ -341,11 +346,15 @@ const Model = function () {
   };
 
   this.getBlacklist = function () {
-    return store.blacklist;
+    return store.blacklist.map((url) => {
+      return url.inputURL;
+    });
   };
 
   this.getWhitelist = function () {
-    return store.whitelist;
+    return store.whitelist.map((url) => {
+      return url.inputURL;
+    });
   };
 
   this.getMode = function () {
