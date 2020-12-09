@@ -3,15 +3,9 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 
-import { ThemeProvider } from "@material-ui/core/styles";
-
-import Theme from "./themes/theme";
-
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={Theme}>
-      <App />
-    </ThemeProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );
