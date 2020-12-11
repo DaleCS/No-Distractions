@@ -18,34 +18,45 @@ const Model = function () {
   /* CALLBACK FUNCTIONS */
 
   const handleBlacklistedTab = (details) => {
-    this.redirectedTabs.set(details.tabId, details.url);
-    browser.tabs.update(details.tabId, { url: store.redirectURL });
+    if (details.frameId === 0) {
+      const { redirectURL } = store;
+      const { tabId, url } = details;
+      this.redirectedTabs.set(tabId, url);
+      browser.tabs.update(tabId, { url: redirectURL });
+    }
   };
 
   const handleWhitelistedTab = (details) => {
-    const isWhitelisted = store.whitelist.some((url) => {
-      return new RegExp(url.regExp).test(details.url);
-    });
-    const isRedirectURL = new RegExp(
-      formatInputURLToRegExp(store.redirectURL)
-    ).test(details.url);
-    const isPreviouslyRedirected = this.redirectedTabs.has(details.tabId);
-    if (!isWhitelisted && !isRedirectURL) {
-      this.redirectedTabs.set(details.tabId, details.url);
-      browser.tabs.update(details.tabId, { url: store.redirectURL });
-    } else if (
-      (isRedirectURL && !isPreviouslyRedirected) ||
-      (isWhitelisted && isPreviouslyRedirected)
-    ) {
-      this.redirectedTabs.delete(details.tabId);
+    if (details.frameId === 0) {
+      const { whitelist, redirectURL } = store;
+      const { tabId, url } = details;
+      const { redirectedTabs } = this;
+
+      const isWhitelisted = whitelist.some((whitelistURL) => {
+        return new RegExp(whitelistURL.regExp).test(url);
+      });
+      const isRedirectURL = new RegExp(
+        formatInputURLToRegExp(redirectURL)
+      ).test(url);
+      const isPreviouslyRedirected = redirectedTabs.has(tabId);
+
+      if (!isWhitelisted && !isRedirectURL) {
+        redirectedTabs.set(tabId, url);
+        browser.tabs.update(tabId, { url: redirectURL });
+      } else if (
+        (isRedirectURL && !isPreviouslyRedirected) ||
+        (isWhitelisted && isPreviouslyRedirected)
+      ) {
+        redirectedTabs.delete(tabId);
+      }
     }
   };
 
   const handleNormalRedirection = (details) => {
-    if (
-      !new RegExp(formatInputURLToRegExp(store.redirectURL)).test(details.url)
-    ) {
-      this.redirectedTabs.delete(details.tabId);
+    const { redirectURL } = store;
+    const { tabId, url } = details;
+    if (!new RegExp(formatInputURLToRegExp(redirectURL)).test(url)) {
+      this.redirectedTabs.delete(tabId);
     }
   };
 
