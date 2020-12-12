@@ -17,14 +17,13 @@ export const handleWhitelistedTab = (details) => {
     const { tabId, url } = details;
 
     const isWhitelisted = isMatchedInList(url, whitelist);
-    const isRedirectURL = isRedirectURL(url, redirectURL);
+    const isNavigatingToRedirectURL = isRedirectURL(url, redirectURL);
     const isPreviouslyRedirected = model.redirectedTabsMap.has(tabId);
 
-    if (!isWhitelisted && !isRedirectURL) {
-      // TODO: WHITELIST SUDDENLY NOT WORKING AGAIN
+    if (!isWhitelisted && !isNavigatingToRedirectURL) {
       redirectTab(url, tabId, model.redirectedTabsMap, redirectURL);
     } else if (
-      (isRedirectURL && !isPreviouslyRedirected) ||
+      (isNavigatingToRedirectURL && !isPreviouslyRedirected) ||
       (isWhitelisted && isPreviouslyRedirected)
     ) {
       model.redirectedTabsMap.delete(tabId);
