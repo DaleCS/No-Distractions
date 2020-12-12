@@ -1,3 +1,3 @@
-import Model from "./model.js";
+import model from "./model";
 
-window.model = new Model();
+window.model = model;

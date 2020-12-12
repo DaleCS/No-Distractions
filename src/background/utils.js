@@ -1,89 +1,4 @@
-export const formatRawURLToMatchPattern = (rawURL) => {
-  if (rawURL.length === 0) {
-    throw "INVALID_URL_STRING";
-  }
-
-  if (/.+:\/\/.+/.test(rawURL) === false) {
-    rawURL = "*://" + rawURL;
-  } else {
-    rawURL = rawURL.replace(/^((http:\/\/)|(https:\/\/))/, "*://");
-  }
-
-  if (rawURL.substring(rawURL.length - 2).localeCompare("/*") !== 0) {
-    if (rawURL[rawURL.length - 1].localeCompare("*") === 0) {
-      rawURL = rawURL.substring(0, rawURL.length - 1) + "/*";
-    } else if (rawURL[rawURL.length - 1].localeCompare("/") !== 0) {
-      rawURL += "/";
-    }
-  }
-
-  return rawURL;
-};
-
-export const formatMatchPatternToRegExpString = (matchPattern) => {
-  if (matchPattern.length === 0) {
-    throw "INVALID_URL_STRING";
-  }
-
-  matchPattern = matchPattern.replace(/\*(?=.+)/, ".+");
-  matchPattern = matchPattern.replace(/\//, "/");
-  if (matchPattern[matchPattern.length - 1].localeCompare("*") === 0) {
-    matchPattern = matchPattern.substring(0, matchPattern.length - 1) + ".*";
-  }
-  return matchPattern;
-};
-
-export const formatRawURLToHTTPMatchPattern = (rawURL) => {
-  if (rawURL.length === 0) {
-    throw "INVALID_URL_STRING";
-  }
-
-  if (/.+:\/\/.+/.test(rawURL) === false) {
-    rawURL = "https://" + rawURL;
-  }
-
-  try {
-    new URL(rawURL);
-  } catch (err) {
-    throw "INVALID_URL_STRING";
-  }
-
-  return rawURL;
-};
-
-export const formatInputURLToRegExp = (inputURL) => {
-  let resultingRegExp = "";
-
-  if (new RegExp(/\/$/).test(inputURL)) {
-    inputURL = inputURL.substring(0, inputURL.length - 1);
-  }
-
-  const protocolRegExp = new RegExp("^[^:]+:(?:\\/\\/)", "i");
-  if (!protocolRegExp.test(inputURL)) {
-    resultingRegExp += "^[^:]+:(?:\\/\\/)";
-  }
-
-  inputURL = inputURL.replace(/\//g, "\\/");
-  inputURL = inputURL.replace(/\./g, "\\.");
-  inputURL = inputURL.replace(/\+/g, "\\+");
-  inputURL = inputURL.replace(/\[/g, "\\[");
-  inputURL = inputURL.replace(/\]/g, "\\]");
-  inputURL = inputURL.replace(/\{/g, "\\{");
-  inputURL = inputURL.replace(/\}/g, "\\}");
-  inputURL = inputURL.replace(/\(/g, "\\(");
-  inputURL = inputURL.replace(/\)/g, "\\)");
-  inputURL = inputURL.replace(/\?/g, "\\?");
-
-  if (new RegExp(/\*$/).test(inputURL)) {
-    inputURL = inputURL.substring(0, inputURL.length - 1) + ".*";
-  }
-
-  resultingRegExp += inputURL + "\\/{0,1}";
-
-  resultingRegExp = `^(${resultingRegExp})$`;
-
-  return resultingRegExp;
-};
+import { formatRawURLToMatchPattern, formatInputURLToRegExp } from "./text";
 
 export const getArrayOfURLRegExp = (list) => {
   return list.map((url) => {
@@ -105,4 +20,36 @@ export const getArrayofURLMatchPatterns = (list) => {
       throw "ERROR: Invalid URL list!";
     }
   });
+};
+
+export const findIndexOfURL = function (url, list) {
+  return list.findIndex((urlEntry) => {
+    return urlEntry.inputURL.localeCompare(url) === 0;
+  });
+};
+
+export const isMatchedInList = function (url, list) {
+  return list.some((urlEntry) => {
+    return new RegExp(urlEntry.regExp).test(url);
+  });
+};
+
+export const isRedirectURL = function (url, redirectURL) {
+  return new RegExp(formatInputURLToRegExp(url)).test(redirectURL);
+};
+
+export const fetchTabsFromList = async function (list, additionalURL = "") {
+  let filter = {
+    url: getArrayofURLMatchPatterns(list),
+  };
+
+  if (additionalURL.length > 0) {
+    filter.url.concat(formatRawURLToMatchPattern(additionalURL));
+  }
+
+  return await browser.tabs.query(filter);
+};
+
+export const fetchAllTabs = async function () {
+  return await browser.tabs.query({ url: "*://*/*" });
 };

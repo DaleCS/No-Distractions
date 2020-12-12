@@ -1,4 +1,4 @@
-import { formatInputURLToRegExp, getArrayOfURLRegExp } from "./utils";
+import { formatInputURLToRegExp, getArrayOfURLRegExp } from "./text";
 
 describe("Testing formatInputURLToRegExp(inputURL)...", () => {
   const dummyCases = [
