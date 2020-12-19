@@ -1,15 +1,10 @@
 import React from "react";
 
-import { activateBlocker, deactivateBlocker } from "../../controllers/requests";
-
-import { ModeSelector } from "../";
-
 import "./Main.css";
 
-import InactivePreferencesIcon from "./preferences-inactive.svg";
-import InactiveListIcon from "./list-inactive.svg";
-import ActivePreferencesIcon from "./preferences-active.svg";
-import ActiveListIcon from "./list-active.svg";
+import { activateBlocker, deactivateBlocker } from "../../controllers/requests";
+
+import { ModeSelector, ListButton, PreferencesButton } from "../reusable";
 
 const Main = ({ redirectPath, model, dispatch }) => {
   const handleOnClickSwitch = (e) => {
@@ -45,34 +40,11 @@ const Main = ({ redirectPath, model, dispatch }) => {
           {model.isActive ? "DEACTIVATE" : "ACTIVATE"}
         </div>
         <div className="surface__options-container">
-          <div
-            className={`surface__options-btn ${
-              model.isActive ? "active" : "inactive"
-            }`}
-            title="URL Lists"
-            onClick={handleOnClickList}
-          >
-            <img
-              src={model.isActive ? ActiveListIcon : InactiveListIcon}
-              alt="preferences.svg"
-              className="surface__options-btn__icon"
-            />
-          </div>
-          <div
-            className={`surface__options-btn ${
-              model.isActive ? "active" : "inactive"
-            }`}
-            title="Preferences"
+          <ListButton isActive={model.isActive} onClick={handleOnClickList} />
+          <PreferencesButton
+            isActive={model.isActive}
             onClick={handleOnClickPreferences}
-          >
-            <img
-              src={
-                model.isActive ? ActivePreferencesIcon : InactivePreferencesIcon
-              }
-              alt="preferences.svg"
-              className="surface__options-btn__icon"
-            />
-          </div>
+          />
         </div>
       </div>
     </div>

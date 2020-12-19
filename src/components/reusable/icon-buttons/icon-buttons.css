@@ -1,0 +1,58 @@
+.icon-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 250ms ease;
+}
+
+.icon-btn-small {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 250ms ease;
+}
+
+.inactive .icon-btn:hover {
+  background-color: rgba(85, 239, 196, 0.08);
+}
+
+.active .icon-btn:hover {
+  background-color: rgba(231, 76, 60, 0.08);
+}
+
+.list-icon {
+  width: 20px;
+  height: 17.5px;
+}
+
+.preferences-icon {
+  width: 20px;
+}
+
+.add-url-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  cursor: pointer;
+}
+
+.remove-url-icon {
+  width: 0.5rem;
+  height: 0.5rem;
+  cursor: pointer;
+}
+
+.svg-stroke {
+  transition: stroke 250ms ease;
+}
+
+.svg-fill {
+  transition: fill 250ms ease;
+}

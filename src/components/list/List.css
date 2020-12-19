@@ -99,13 +99,6 @@
   max-width: 100%;
 }
 
-.url__remove {
-  width: 0.75rem;
-  height: 0.75rem;
-  object-fit: contain;
-  cursor: pointer;
-}
-
 .new-url-field {
   display: grid;
   grid-template-rows: auto;
@@ -142,13 +135,6 @@
 .active .new-url-field__field {
   color: #e74c3c;
   border-bottom: 1px solid #e74c3c;
-}
-
-.new-url-field__icon {
-  width: 0.75rem;
-  height: 0.75rem;
-  object-fit: contain;
-  cursor: pointer;
 }
 
 input:focus,

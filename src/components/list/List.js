@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import "./List.css";
+
 import {
   getBlacklist,
   getWhitelist,
@@ -7,74 +9,8 @@ import {
   removeURL,
 } from "../../controllers/requests";
 
-import "./List.css";
-
-import InactiveRemoveIcon from "./remove-inactive.png";
-import ActiveRemoveIcon from "./remove-active.png";
-import InactiveAddIcon from "./add-inactive.png";
-import ActiveAddIcon from "./add-active.png";
-
-import { ModeSelector, BackButton } from "../";
-
-const URL = ({ url, isActive, handleOnRemoveUrl }) => {
-  const handleOnClickRemove = (e) => {
-    e.preventDefault();
-    handleOnRemoveUrl(url);
-  };
-
-  return (
-    <div className="url">
-      <span className="url__url">{url}</span>
-      <img
-        src={isActive ? ActiveRemoveIcon : InactiveRemoveIcon}
-        onClick={handleOnClickRemove}
-        className="url__remove"
-        alt="remove.png"
-      />
-    </div>
-  );
-};
-
-const NewURLField = ({ isActive, handleOnAddURL }) => {
-  const [urlField, setUrlField] = useState("");
-
-  const handleOnChange = (e) => {
-    e.preventDefault();
-    setUrlField(e.target.value);
-  };
-
-  const handleOnKeyDown = (e) => {
-    if (e.keyCode === 13 && handleOnAddURL(urlField)) {
-      setUrlField("");
-    }
-  };
-
-  const handleOnClickAdd = (e) => {
-    e.preventDefault();
-    if (handleOnAddURL(urlField)) {
-      setUrlField("");
-    }
-  };
-
-  return (
-    <div className="new-url-field">
-      <input
-        type="text"
-        placeholder="Enter new URL here..."
-        className="new-url-field__field"
-        value={urlField}
-        onChange={handleOnChange}
-        onKeyDown={handleOnKeyDown}
-      />
-      <img
-        src={isActive ? ActiveAddIcon : InactiveAddIcon}
-        onClick={handleOnClickAdd}
-        className="new-url-field__icon"
-        alt="add.png"
-      />
-    </div>
-  );
-};
+import { URL, NewURLField } from "./";
+import { ModeSelector, BackButton } from "../reusable";
 
 const fetchListSwitch = (mode) => {
   switch (mode) {

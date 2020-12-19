@@ -2,7 +2,7 @@ import React from "react";
 
 import "./ModeSelector.css";
 
-import { switchBlockMode } from "../../controllers/requests";
+import { switchBlockMode } from "../../../controllers/requests";
 
 const ModeSelector = ({ model, dispatch, className }) => {
   const handleOnClickBlacklist = (e) => {

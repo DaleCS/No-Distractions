@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 
-import { makeStyles, Grid, CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
+
+import "./App.css";
 
 import { Main, List, Preferences } from "./components";
 import useModel from "./hooks/useModel";
-
-const useStyles = makeStyles({
-  root: {
-    width: "100%",
-    height: "100vh",
-    boxSizing: "border-box",
-    padding: "1rem",
-  },
-});
 
 const App = () => {
   const { state: model, dispatch } = useModel();
@@ -84,20 +77,7 @@ const App = () => {
       );
     }
   }
-
-  const classes = useStyles();
-  return (
-    <Grid
-      container
-      justify="center"
-      alignItems="stretch"
-      className={classes.root}
-    >
-      <Grid item xs={12}>
-        {renderedPath}
-      </Grid>
-    </Grid>
-  );
+  return <div className="app">{renderedPath}</div>;
 };
 
 export default App;
