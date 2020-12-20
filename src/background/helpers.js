@@ -36,7 +36,16 @@ export const redirectExistingBlacklistedURLs = async function (
 ) {
   try {
     let toBeRedirectedTabs = await fetchTabsFromList(store.blacklist);
-    redirectTabsFromArray(toBeRedirectedTabs, redirectedTabsMap);
+
+    let loadingRedirectedTabs = await browser.tabs.query({
+      url: store.redirectURL,
+      status: "loading",
+    });
+
+    redirectTabsFromArray(
+      toBeRedirectedTabs.concat(loadingRedirectedTabs),
+      redirectedTabsMap
+    );
   } catch (err) {
     console.log(err);
     console.error(
