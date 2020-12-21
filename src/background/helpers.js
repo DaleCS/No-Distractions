@@ -100,8 +100,6 @@ export const addToList = function (url, list) {
     regExp,
     matchPattern,
   });
-
-  console.log(list);
 };
 
 export const restoreAllRedirectedTabs = function (redirectedTabsMap) {

@@ -1,105 +1,6 @@
-import { formatInputURLToRegExp, getArrayOfURLRegExp } from "./text";
+import { getArrayOfURLRegExp } from "./utils";
 
-describe("Testing formatInputURLToRegExp(inputURL)...", () => {
-  const dummyCases = [
-    {
-      inputURL: "https://mangadex.org/",
-      actualURL: "https://mangadex.org/",
-      expected: true,
-    },
-    {
-      inputURL: "https://mangadex.org/",
-      actualURL: "https://mangadex.org/login/",
-      expected: false,
-    },
-    {
-      inputURL: "https://mangadex.org/*",
-      actualURL: "https://mangadex.org/",
-      expected: true,
-    },
-    {
-      inputURL: "https://mangadex.org/*",
-      actualURL: "https://mangadex.org/login/",
-      expected: true,
-    },
-    {
-      inputURL: "https://mangadex.org/",
-      actualURL: "https://linkedin.com/in/dalecs/",
-      expected: false,
-    },
-    {
-      inputURL: "mangadex.org",
-      actualURL: "https://mangadex.org/",
-      expected: true,
-    },
-    {
-      inputURL: "mangadex.org",
-      actualURL: "https://mangadex.com/",
-      expected: false,
-    },
-    {
-      inputURL: "mangadex.org*",
-      actualURL: "https://mangadex.org/",
-      expected: true,
-    },
-    {
-      inputURL: "mangadex.org*",
-      actualURL: "https://mangadex.org/login",
-      expected: true,
-    },
-    {
-      inputURL: "mangadex.org*",
-      actualURL: "https://mangadex.com/",
-      expected: false,
-    },
-    {
-      inputURL: "google.com/maps",
-      actualURL: "https://google.com/maps/",
-      expected: true,
-    },
-    {
-      inputURL: "https://google.com/resource.html",
-      actualURL: "https://google.com/resource.html",
-      expected: true,
-    },
-    {
-      inputURL: "https://google.com/resource.html",
-      actualURL: "https://google.com/resource.hml",
-      expected: false,
-    },
-    {
-      inputURL: "https://google.com/*",
-      actualURL: "https://google.com/resource.html",
-      expected: true,
-    },
-    {
-      inputURL: "https://drive.google.com/drive/my-drive",
-      actualURL: "https://drive.google.com/drive/my-drive/",
-      expected: true,
-    },
-    {
-      inputURL: "https://drive.google.com/drive/my-drive",
-      actualURL: "https://drive.google.com/drive/my-drive/a",
-      expected: false,
-    },
-  ];
-
-  dummyCases.forEach((testCase) => {
-    const { inputURL, actualURL, expected } = testCase;
-    test(`${
-      expected
-        ? "inputURL should MATCH actualURL"
-        : "inputURL should NOT MATCH actualURL"
-    }`, () => {
-      const result = new RegExp(formatInputURLToRegExp(inputURL)).test(
-        actualURL
-      );
-      expect(result).toBe(expected);
-    });
-  });
-});
-
-describe("Testing getArrayOfURLRegExps(list)", () => {
+describe("Testing getArrayOfURLRegExp(list)", () => {
   const case1 = {
     list: [
       {
@@ -196,8 +97,7 @@ describe("Testing getArrayOfURLRegExps(list)", () => {
   };
 
   test("Should return array of events.UrlFilters", () => {
-    const result = getArrayOfURLRegExp(case1.list);
-    expect(result).toStrictEqual(case1.expected);
+    expect(getArrayOfURLRegExp(case1.list)).toStrictEqual(case1.expected);
   });
 
   test("Should throw an error", () => {

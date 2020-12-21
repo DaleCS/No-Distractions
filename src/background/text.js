@@ -3,18 +3,24 @@ export const formatRawURLToMatchPattern = (rawURL) => {
     throw "INVALID_URL_STRING";
   }
 
-  if (/.+:\/\/.+/.test(rawURL) === false) {
-    rawURL = "*://" + rawURL;
-  } else {
-    rawURL = rawURL.replace(/^((http:\/\/)|(https:\/\/))/, "*://");
+  if (/.+:\/\//.test(rawURL) === false) {
+    if (/^\*.*$/.test(rawURL)) {
+      throw "INVALID_URL_STRING";
+    } else {
+      rawURL = "*://" + rawURL;
+    }
   }
 
-  if (rawURL.substring(rawURL.length - 2).localeCompare("/*") !== 0) {
-    if (rawURL[rawURL.length - 1].localeCompare("*") === 0) {
-      rawURL = rawURL.substring(0, rawURL.length - 1) + "/*";
-    } else if (rawURL[rawURL.length - 1].localeCompare("/") !== 0) {
-      rawURL += "/";
-    }
+  if (/[^\/]\*$/.test(rawURL)) {
+    // if rawURL ends with ...*
+    rawURL = rawURL.substring(0, rawURL.length - 1) + "/*";
+  } else if (/\/$/.test(rawURL)) {
+    // if rawURL ends with .../
+    rawURL = rawURL.substring(0, rawURL.length - 1);
+  }
+
+  if (/^.+:\/\/[\*\/]+/.test(rawURL)) {
+    throw "INVALID_URL_STRING";
   }
 
   return rawURL;

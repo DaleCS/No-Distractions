@@ -12,7 +12,7 @@ export const getArrayOfURLRegExp = (list) => {
   });
 };
 
-export const getArrayofURLMatchPatterns = (list) => {
+export const getArrayOfURLMatchPatterns = (list) => {
   return list.map((url) => {
     if (url && url.matchPattern) {
       return url.matchPattern;
@@ -40,7 +40,7 @@ export const isRedirectURL = function (url, redirectURL) {
 
 export const fetchTabsFromList = async function (list, additionalURL = "") {
   let filter = {
-    url: getArrayofURLMatchPatterns(list),
+    url: getArrayOfURLMatchPatterns(list),
   };
 
   if (additionalURL.length > 0) {
