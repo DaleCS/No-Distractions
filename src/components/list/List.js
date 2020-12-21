@@ -10,7 +10,7 @@ import {
 } from "../../controllers/requests";
 
 import { URL, NewURLField } from "./";
-import { ModeSelector, BackButton } from "../reusable";
+import { ModeSelector, Button } from "../reusable";
 
 const fetchListSwitch = (mode) => {
   switch (mode) {
@@ -103,7 +103,7 @@ const List = ({ redirectPath, model, dispatch }) => {
           {listMarkup}
         </div>
       </div>
-      <BackButton onClick={handleOnClickBack} />
+      <Button onClick={handleOnClickBack}>BACK</Button>
     </div>
   );
 };

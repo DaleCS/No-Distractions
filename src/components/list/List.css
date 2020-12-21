@@ -93,10 +93,18 @@
 }
 
 .url__url {
+  outline: none;
+  border: none;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
   font-size: 0.75rem;
   line-height: 0.875rem;
-  text-overflow: ellipsis;
-  max-width: 100%;
+  white-space: nowrap;
+  overflow-x: hidden;
+  transition: background-color 250ms ease, color 250ms ease;
+  background-color: transparent;
+  color: inherit;
 }
 
 .new-url-field {

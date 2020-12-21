@@ -77,9 +77,9 @@ export const switchBlockMode = (mode, dispatch) => {
   }
 };
 
-export const addURL = (url) => {
+export const addURL = (url, scope = "CUSTOM") => {
   if (model && url && url.length > 0) {
-    return model.addToBlockedURLs(url, model.mode);
+    return model.addURL(url, model.mode, scope);
   }
   return false;
 };
@@ -103,4 +103,13 @@ export const setRedirectURL = (url) => {
     return model.setRedirectURL(url);
   }
   return false;
+};
+
+export const getURLOfCurrentWindow = async (setCurrentURL) => {
+  try {
+    const currentURL = await model.getURLOfCurrentWindow();
+    setCurrentURL(currentURL);
+  } catch (e) {
+    return "";
+  }
 };

@@ -12,7 +12,11 @@ import {
   getArrayOfURLRegExp,
   findIndexOfURL,
 } from "./utils";
-import { formatRawURLToMatchPattern, formatInputURLToRegExp } from "./text";
+import {
+  formatRawURLToMatchPattern,
+  formatInputURLToRegExp,
+  extractHostnameFromURL,
+} from "./text";
 
 export const redirectTab = function (
   url,
@@ -91,15 +95,44 @@ export const addWhitelistListeners = function () {
   browser.webNavigation.onBeforeNavigate.addListener(handleWhitelistedTab);
 };
 
-export const addToList = function (url, list) {
-  const regExp = formatInputURLToRegExp(url);
-  const matchPattern = formatRawURLToMatchPattern(url);
+export const addToList = function (url, list, scope) {
+  let regExp, matchPattern;
+  switch (scope) {
+    case "HOSTNAME": {
+      url = extractHostnameFromURL(url) + "*";
+      if (url.length === 0) {
+        return false;
+      }
+      regExp = formatInputURLToRegExp(url);
+      matchPattern = formatRawURLToMatchPattern(url);
+      break;
+    }
+    case "SUBPATHS": {
+      if (url[url.length - 1].localeCompare("/") === 0) {
+        url += "*";
+      } else {
+        url += "/*";
+      }
+      regExp = formatInputURLToRegExp(url);
+      matchPattern = formatRawURLToMatchPattern(url);
+      break;
+    }
+    case "CUSTOM":
+    default: {
+      regExp = formatInputURLToRegExp(url);
+      matchPattern = formatRawURLToMatchPattern(url);
+    }
+  }
+
+  console.log(`${regExp} ${matchPattern}`);
 
   list.push({
     inputURL: url,
     regExp,
     matchPattern,
   });
+
+  return true;
 };
 
 export const restoreAllRedirectedTabs = function (redirectedTabsMap) {

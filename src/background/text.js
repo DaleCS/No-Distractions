@@ -92,3 +92,12 @@ export const formatInputURLToRegExp = (inputURL) => {
 
   return resultingRegExp;
 };
+
+export const extractHostnameFromURL = function (url) {
+  try {
+    const hostname = new URL(url).origin + "/";
+    return hostname;
+  } catch (e) {
+    return "";
+  }
+};

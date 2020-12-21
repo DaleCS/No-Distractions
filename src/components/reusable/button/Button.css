@@ -1,0 +1,45 @@
+.btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: color 250ms ease, background-color 250ms ease, border 250ms ease;
+}
+
+.inactive .btn {
+  color: #55efc4;
+  background-color: rgba(85, 239, 196, 0.05);
+  border: 1px solid #55efc4;
+}
+
+.active .btn {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.05);
+  border: 1px solid #e74c3c;
+}
+
+.inactive .btn:hover {
+  background-color: rgba(85, 239, 196, 0.08);
+}
+
+.active .btn:hover {
+  background-color: rgba(231, 76, 60, 0.08);
+}
+
+.small {
+  font-size: 0.875rem;
+  font-weight: bold;
+  letter-spacing: 0.015rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.large {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1rem;
+  padding: 0.5rem 1rem;
+}

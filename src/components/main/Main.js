@@ -1,12 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import "./Main.css";
 
-import { activateBlocker, deactivateBlocker } from "../../controllers/requests";
+import {
+  activateBlocker,
+  deactivateBlocker,
+  getURLOfCurrentWindow,
+  addURL,
+} from "../../controllers/requests";
 
-import { ModeSelector, ListButton, PreferencesButton } from "../reusable";
+import { CurrentURL, Blocker } from "./";
 
 const Main = ({ redirectPath, model, dispatch }) => {
+  const [currentURL, setCurrentURL] = useState("");
+
+  useEffect(() => {
+    getURLOfCurrentWindow(setCurrentURL);
+  }, []);
+
+  const handleOnClickAddDomain = (e) => {
+    e.preventDefault();
+    addURL(currentURL, "HOSTNAME");
+  };
+
+  const handeOnClickAddURL = (e) => {
+    e.preventDefault();
+    addURL(currentURL, "CUSTOM");
+  };
+
+  const handleOnClickAddURLAndPaths = (e) => {
+    e.preventDefault();
+    addURL(currentURL, "SUBPATHS");
+  };
+
   const handleOnClickSwitch = (e) => {
     e.preventDefault();
     if (model.isActive) {
@@ -28,25 +54,28 @@ const Main = ({ redirectPath, model, dispatch }) => {
 
   return (
     <div className={`main ${model.isActive ? "active" : "inactive"}`}>
-      <div className={`surface ${model.isActive ? "active" : "inactive"}`}>
-        <ModeSelector model={model} dispatch={dispatch} />
-        <div
-          className={`surface__switch ${
-            model.isActive ? "active" : "inactive"
-          }`}
-          title={model.isActive ? "Deactivate Blocker" : "Activate Blocker"}
-          onClick={handleOnClickSwitch}
-        >
-          {model.isActive ? "DEACTIVATE" : "ACTIVATE"}
-        </div>
-        <div className="surface__options-container">
-          <ListButton isActive={model.isActive} onClick={handleOnClickList} />
-          <PreferencesButton
-            isActive={model.isActive}
-            onClick={handleOnClickPreferences}
-          />
-        </div>
-      </div>
+      {currentURL.length > 0 ? (
+        <CurrentURL
+          currentURL={currentURL}
+          mode={model.mode}
+          handlers={{
+            handleOnClickAddDomain,
+            handeOnClickAddURL,
+            handleOnClickAddURLAndPaths,
+          }}
+        />
+      ) : (
+        <div />
+      )}
+      <Blocker
+        model={model}
+        dispatch={dispatch}
+        handlers={{
+          handleOnClickSwitch,
+          handleOnClickList,
+          handleOnClickPreferences,
+        }}
+      />
     </div>
   );
 };

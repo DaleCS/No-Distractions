@@ -12,7 +12,8 @@ const URL = ({ url, isActive, handleOnRemoveUrl }) => {
 
   return (
     <div className="url">
-      <span className="url__url">{url}</span>
+      {/* <span className="url__url">{url}</span> */}
+      <input type="text" readOnly value={url} className="url__url" />
       <RemoveURLButton isActive={isActive} onClick={handleOnClickRemove} />
     </div>
   );

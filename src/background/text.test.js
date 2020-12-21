@@ -1,4 +1,8 @@
-import { formatInputURLToRegExp, formatRawURLToMatchPattern } from "./text";
+import {
+  formatInputURLToRegExp,
+  formatRawURLToMatchPattern,
+  extractHostnameFromURL,
+} from "./text";
 
 describe("Testing formatInputURLToRegExp(inputURL)...", () => {
   const dummyCases = [
@@ -140,5 +144,34 @@ describe("Testing formatRawURLToMatchPattern(url)...", () => {
         formatRawURLToMatchPattern(input);
       }).toThrow();
     });
+  });
+});
+
+describe("Testing extractHostnameFromURL(url)...", () => {
+  const testCases = [
+    "https://www.twitch.tv/yueko",
+    "https://www.twitch.tv",
+    "https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL",
+    "http://wosjflkdsjklklasdklfakldsf.com/awdaw/dsads/da/sd/as/dasd/?awesome=woah",
+    "",
+    "https://",
+    "www.twitch.tv",
+    "https://w/",
+  ];
+
+  const expected = [
+    "https://www.twitch.tv/",
+    "https://www.twitch.tv/",
+    "https://developer.mozilla.org/",
+    "http://wosjflkdsjklklasdklfakldsf.com/",
+    "",
+    "",
+    "",
+    "",
+  ];
+
+  testCases.forEach((url, index) => {
+    const result = extractHostnameFromURL(url);
+    expect(result).toBe(expected[index]);
   });
 });

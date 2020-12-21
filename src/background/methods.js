@@ -52,7 +52,7 @@ export const deactivateBlocker = function () {
   return false;
 };
 
-export const addToBlockedURLs = function (url, targetMode) {
+export const addURL = function (url, targetMode, scope = "CUSTOM") {
   try {
     const { blacklist, whitelist, redirectURL } = store;
     switch (targetMode) {
@@ -61,7 +61,9 @@ export const addToBlockedURLs = function (url, targetMode) {
           throw "REDIRECT_URL_IS_BLOCKED";
         }
 
-        addToList(url, blacklist);
+        if (!addToList(url, blacklist, scope)) {
+          return false;
+        }
 
         if (this.isActive) {
           refreshBlacklistListener();
@@ -70,7 +72,9 @@ export const addToBlockedURLs = function (url, targetMode) {
         break;
       }
       case "WHITELIST": {
-        addToList(url, whitelist);
+        if (!addToList(url, whitelist, scope)) {
+          return false;
+        }
 
         if (this.isActive) {
           restoreTabsAfterURLEntryRemoval(url, this.redirectedTabsMap);
@@ -124,7 +128,6 @@ export const removeFromBlockedURLs = function (url, targetMode) {
           return false;
         }
         if (this.isActive === true) {
-          // redirectExistingBlockedURLs(this.mode, this.redirectedTabsMap);
           blockTabsAfterURLEntryRemoval(url, this.redirectedTabsMap);
         }
         break;
@@ -178,6 +181,27 @@ export const setRedirectURL = function (url) {
     }
   }
   return false;
+};
+
+export const getURLOfCurrentWindow = async function () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const currentTab = await browser.tabs.query({
+        currentWindow: true,
+        active: true,
+        url: "*://*/*",
+      });
+      if (currentTab && currentTab.length > 0) {
+        resolve(currentTab[0].url);
+      } else {
+        reject({
+          error: "Failed to fetch current window tab or there is none",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 export const getBlacklist = function () {

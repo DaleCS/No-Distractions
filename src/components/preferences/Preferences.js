@@ -3,7 +3,7 @@ import React from "react";
 import "./Preferences.css";
 
 import { SetRedirectURL } from "./";
-import { BackButton } from "../reusable";
+import { Button } from "../reusable";
 
 const Preferences = ({ redirectPath, model, dispatch }) => {
   const handleOnClickBack = (e) => {
@@ -16,7 +16,7 @@ const Preferences = ({ redirectPath, model, dispatch }) => {
       <div className="preferences-list">
         <SetRedirectURL />
       </div>
-      <BackButton onClick={handleOnClickBack} />
+      <Button onClick={handleOnClickBack}>BACK</Button>
     </div>
   );
 };
