@@ -118,7 +118,7 @@ export const restoreAllRedirectedTabs = function (redirectedTabsMap) {
   redirectedTabsMap.clear();
 };
 
-export const redirectExistingBlockedURLs = (mode, redirectedTabsMap) => {
+export const redirectExistingBlockedURLs = function (mode, redirectedTabsMap) {
   try {
     switch (mode) {
       case "BLACKLIST": {
@@ -126,7 +126,7 @@ export const redirectExistingBlockedURLs = (mode, redirectedTabsMap) => {
         break;
       }
       case "WHITELIST": {
-        redirectExistingNonWhitelistedURLs(redirectedTabs);
+        redirectExistingNonWhitelistedURLs(redirectedTabsMap);
         break;
       }
     }
@@ -138,34 +138,37 @@ export const redirectExistingBlockedURLs = (mode, redirectedTabsMap) => {
   }
 };
 
-export const removeAllListeners = () => {
+export const removeAllListeners = function () {
   browser.webNavigation.onBeforeNavigate.removeListener(handleBlacklistedTab);
   browser.webNavigation.onBeforeNavigate.removeListener(handleWhitelistedTab);
   browser.webNavigation.onCompleted.removeListener(handleAllowedNavigation);
   browser.tabs.onRemoved.removeListener(handleOnRemovedTab);
 };
 
-export const refreshBlacklistListener = () => {
+export const refreshBlacklistListener = function () {
   browser.webNavigation.onBeforeNavigate.removeListener(handleBlacklistedTab);
   browser.webNavigation.onBeforeNavigate.addListener(handleBlacklistedTab, {
     url: getArrayOfURLRegExp(store.blacklist),
   });
 };
 
-export const restoreTabsAfterURLEntryRemoval = (url) => {
+export const restoreTabsAfterURLEntryRemoval = function (
+  url,
+  redirectedTabsMap
+) {
   url = formatInputURLToRegExp(url);
 
-  const tabIdsIterator = this.redirectedTabs.keys();
+  const tabIdsIterator = redirectedTabsMap.keys();
   for (
     let tabId = tabIdsIterator.next();
     !tabId.done;
     tabId = tabIdsIterator.next()
   ) {
-    if (new RegExp(url).test(this.redirectedTabs.get(tabId.value))) {
+    if (new RegExp(url).test(redirectedTabsMap.get(tabId.value))) {
       browser.tabs.update(tabId.value, {
-        url: this.redirectedTabs.get(tabId.value),
+        url: redirectedTabsMap.get(tabId.value),
       });
-      this.redirectedTabs.delete(tabId.value);
+      redirectedTabsMap.delete(tabId.value);
     }
   }
 };

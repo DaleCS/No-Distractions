@@ -101,32 +101,28 @@ describe("Testing formatInputURLToRegExp(inputURL)...", () => {
 
 describe("Testing formatRawURLToMatchPattern(url)...", () => {
   const testCases = [
-    "https://www.twitch.tv/ichikamaia",
-    "https://www.twitch.tv/ichikamaia/",
+    "www.twitch.tv",
+    "www.twitch.tv/",
+    "www.twitch.tv/*",
+    "www.twitch.tv*",
     "https://www.twitch.tv/*",
     "https://www.twitch.tv*",
     "https://www.twitch.tv/ichikamaia",
     "https://www.twitch.tv/ichikamaia/",
     "https://www.twitch.tv/ichikamaia/*",
     "https://www.twitch.tv/ichikamaia*",
-    "www.twitch.tv",
-    "www.twitch.tv/",
-    "www.twitch.tv/*",
-    "www.twitch.tv*",
   ];
   const expected = [
-    "https://www.twitch.tv/ichikamaia",
-    "https://www.twitch.tv/ichikamaia",
+    "*://www.twitch.tv/",
+    "*://www.twitch.tv/",
+    "*://www.twitch.tv/*",
+    "*://www.twitch.tv/*",
     "https://www.twitch.tv/*",
     "https://www.twitch.tv/*",
     "https://www.twitch.tv/ichikamaia",
     "https://www.twitch.tv/ichikamaia",
     "https://www.twitch.tv/ichikamaia/*",
     "https://www.twitch.tv/ichikamaia/*",
-    "*://www.twitch.tv",
-    "*://www.twitch.tv",
-    "*://www.twitch.tv/*",
-    "*://www.twitch.tv/*",
   ];
 
   const testCasesThrows = ["*", "*/", "*/*"];

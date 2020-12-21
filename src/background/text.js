@@ -12,10 +12,12 @@ export const formatRawURLToMatchPattern = (rawURL) => {
   }
 
   if (/[^\/]\*$/.test(rawURL)) {
-    // if rawURL ends with ...*
     rawURL = rawURL.substring(0, rawURL.length - 1) + "/*";
+  } else if (/^.+:\/\/[^\/]+\/?$/.test(rawURL)) {
+    if (!/\/$/.test(rawURL)) {
+      rawURL += "/";
+    }
   } else if (/\/$/.test(rawURL)) {
-    // if rawURL ends with .../
     rawURL = rawURL.substring(0, rawURL.length - 1);
   }
 

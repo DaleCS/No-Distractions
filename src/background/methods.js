@@ -72,7 +72,7 @@ export const addToBlockedURLs = function (url, targetMode) {
         addToList(url, whitelist);
 
         if (this.isActive) {
-          restoreTabsAfterURLEntryRemoval(url);
+          restoreTabsAfterURLEntryRemoval(url, this.redirectedTabsMap);
         }
         break;
       }
@@ -114,7 +114,7 @@ export const removeFromBlockedURLs = function (url, targetMode) {
         }
         if (this.isActive === true) {
           refreshBlacklistListener();
-          restoreTabsAfterURLEntryRemoval(url);
+          restoreTabsAfterURLEntryRemoval(url, this.redirectedTabsMap);
         }
         break;
       }

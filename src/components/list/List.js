@@ -39,10 +39,8 @@ const List = ({ redirectPath, model, dispatch }) => {
   };
 
   const handleOnAddURL = (url) => {
-    if (
-      addURL(url) &&
-      (model.mode === "BLACKLIST" || model.mode === "WHITELIST")
-    ) {
+    const result = addURL(url);
+    if (result && (model.mode === "BLACKLIST" || model.mode === "WHITELIST")) {
       setList(fetchListSwitch(model.mode));
       return true;
     }
