@@ -18,10 +18,10 @@ export const redirectTab = function (
   url,
   tabId,
   redirectedTabsMap,
-  redirectURL
+  redirectTo = store.redirectURL
 ) {
   redirectedTabsMap.set(tabId, url);
-  browser.tabs.update(tabId, { url: redirectURL });
+  browser.tabs.update(tabId, { url: redirectTo });
 };
 
 export const redirectTabsFromArray = function (tabsArr, redirectedTabsMap) {
@@ -129,6 +129,8 @@ export const redirectExistingBlockedURLs = function (mode, redirectedTabsMap) {
         redirectExistingNonWhitelistedURLs(redirectedTabsMap);
         break;
       }
+      default: {
+      }
     }
   } catch (err) {
     console.log(err);
@@ -158,19 +160,29 @@ export const restoreTabsAfterURLEntryRemoval = function (
 ) {
   url = formatInputURLToRegExp(url);
 
-  const tabIdsIterator = redirectedTabsMap.keys();
-  for (
-    let tabId = tabIdsIterator.next();
-    !tabId.done;
-    tabId = tabIdsIterator.next()
-  ) {
-    if (new RegExp(url).test(redirectedTabsMap.get(tabId.value))) {
-      browser.tabs.update(tabId.value, {
-        url: redirectedTabsMap.get(tabId.value),
+  for (let [key, value] of redirectedTabsMap) {
+    if (new RegExp(url).test(value)) {
+      browser.tabs.update(key, {
+        url: value,
       });
-      redirectedTabsMap.delete(tabId.value);
+      redirectedTabsMap.delete(key);
     }
   }
+};
+
+export const blockTabsAfterURLEntryRemoval = async function (
+  url,
+  redirectedTabsMap
+) {
+  url = formatRawURLToMatchPattern(url);
+
+  let tabsToBeBlocked = await browser.tabs.query({
+    url,
+  });
+
+  tabsToBeBlocked.forEach((tab) => {
+    redirectTab(tab.url, tab.id, redirectedTabsMap, store.redirectURL);
+  });
 };
 
 export const isSuccessfullyRemovedFromList = function (url, list) {

@@ -12,6 +12,7 @@ import {
   removeAllListeners,
   refreshBlacklistListener,
   restoreTabsAfterURLEntryRemoval,
+  blockTabsAfterURLEntryRemoval,
   isSuccessfullyRemovedFromList,
 } from "./helpers";
 import { isMatchedInList, isRedirectURL } from "./utils";
@@ -123,7 +124,8 @@ export const removeFromBlockedURLs = function (url, targetMode) {
           return false;
         }
         if (this.isActive === true) {
-          redirectExistingBlockedURLs();
+          // redirectExistingBlockedURLs(this.mode, this.redirectedTabsMap);
+          blockTabsAfterURLEntryRemoval(url, this.redirectedTabsMap);
         }
         break;
       }
