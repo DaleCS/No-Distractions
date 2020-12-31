@@ -15,10 +15,10 @@ import { ModeSelector, Button } from "../reusable";
 const fetchListSwitch = (mode) => {
   switch (mode) {
     case "BLACKLIST": {
-      return [...getBlacklist()];
+      return getBlacklist();
     }
     case "WHITELIST": {
-      return [...getWhitelist()];
+      return getWhitelist();
     }
     default: {
       return [];
@@ -27,7 +27,7 @@ const fetchListSwitch = (mode) => {
 };
 
 const List = ({ redirectPath, model, dispatch }) => {
-  const [list, setList] = useState(fetchListSwitch(model.mode));
+  const [list, setList] = useState([]);
 
   useEffect(() => {
     setList(fetchListSwitch(model.mode));

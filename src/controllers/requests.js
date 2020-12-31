@@ -12,6 +12,19 @@ let model;
 export const getModel = async (dispatch) => {
   try {
     model = await window.browser.extension.getBackgroundPage().model;
+
+    if (model.isActive) {
+      dispatch(ACTIVATE_BLOCKER);
+    } else {
+      dispatch(DEACTIVATE_BLOCKER);
+    }
+
+    if (model.mode.localeCompare("WHITELIST") === 0) {
+      dispatch(SET_WHITELIST_MODE);
+    } else {
+      dispatch(SET_BLACKLIST_MODE);
+    }
+
     dispatch(MODEL_LOAD_COMPLETE);
   } catch (err) {
     console.log(err);
@@ -110,6 +123,6 @@ export const getURLOfCurrentWindow = async (setCurrentURL) => {
     const currentURL = await model.getURLOfCurrentWindow();
     setCurrentURL(currentURL);
   } catch (e) {
-    return "";
+    setCurrentURL("");
   }
 };

@@ -1,16 +1,6 @@
 import { useEffect, useReducer } from "react";
 
-import {
-  ACTIVATE_BLOCKER,
-  DEACTIVATE_BLOCKER,
-  SET_BLACKLIST_MODE,
-  SET_WHITELIST_MODE,
-} from "./constants";
-import {
-  getModel,
-  getModelBlockerStatus,
-  getModelBlockMode,
-} from "../controllers/requests";
+import { getModel } from "../controllers/requests";
 
 const initialState = {
   fetchStatus: "LOADING",
@@ -51,30 +41,8 @@ const useModel = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    if (state.fetchStatus.localeCompare("LOADING") === 0) {
-      getModel(dispatch);
-    } else {
-      if (getModelBlockerStatus()) {
-        dispatch(ACTIVATE_BLOCKER);
-      } else {
-        dispatch(DEACTIVATE_BLOCKER);
-      }
-
-      switch (getModelBlockMode()) {
-        case "BLACKLIST": {
-          dispatch(SET_BLACKLIST_MODE);
-          break;
-        }
-        case "WHITELIST": {
-          dispatch(SET_WHITELIST_MODE);
-          break;
-        }
-        default: {
-          console.error("ERROR: Could not retrieve block mode");
-        }
-      }
-    }
-  }, [state.fetchStatus]);
+    getModel(dispatch);
+  }, []);
 
   return { state, dispatch };
 };

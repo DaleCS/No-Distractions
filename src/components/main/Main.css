@@ -1,7 +1,7 @@
 .main {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: repeat(2, auto);
   justify-content: stretch;
   align-content: end;
   row-gap: 0.5rem;
@@ -81,6 +81,7 @@
   border-radius: 0.25rem;
   transition: border-color 250ms ease, background-color 250ms ease;
   box-sizing: border-box;
+  margin: 0;
 }
 
 .blocker.inactive {

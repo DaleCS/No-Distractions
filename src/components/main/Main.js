@@ -18,19 +18,19 @@ const Main = ({ redirectPath, model, dispatch }) => {
     getURLOfCurrentWindow(setCurrentURL);
   }, []);
 
-  const handleOnClickAddDomain = (e) => {
-    e.preventDefault();
-    addURL(currentURL, "HOSTNAME");
-  };
-
-  const handeOnClickAddURL = (e) => {
+  const handleOnClickAddURL = (e) => {
     e.preventDefault();
     addURL(currentURL, "CUSTOM");
   };
 
-  const handleOnClickAddURLAndPaths = (e) => {
+  const handleOnClickAddSubpaths = (e) => {
     e.preventDefault();
     addURL(currentURL, "SUBPATHS");
+  };
+
+  const handleOnClickAddDomain = (e) => {
+    e.preventDefault();
+    addURL(currentURL, "HOSTNAME");
   };
 
   const handleOnClickSwitch = (e) => {
@@ -60,8 +60,8 @@ const Main = ({ redirectPath, model, dispatch }) => {
           mode={model.mode}
           handlers={{
             handleOnClickAddDomain,
-            handeOnClickAddURL,
-            handleOnClickAddURLAndPaths,
+            handleOnClickAddURL,
+            handleOnClickAddSubpaths,
           }}
         />
       ) : (

@@ -1,11 +1,12 @@
 .list {
   display: grid;
-  grid-template-rows: auto 400px auto;
+  grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr;
   justify-items: flex-start;
   row-gap: 0.5rem;
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .desc-and-url-list {
@@ -14,6 +15,7 @@
   grid-template-columns: 1fr;
   min-width: 0;
   width: 100%;
+  height: 100%;
   transition: background-color 250ms ease, border 250ms ease;
   border-radius: 0.25rem;
   overflow: hidden;
