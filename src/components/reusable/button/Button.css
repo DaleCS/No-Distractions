@@ -8,6 +8,8 @@
   cursor: pointer;
   border-radius: 0.25rem;
   transition: color 250ms ease, background-color 250ms ease, border 250ms ease;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .inactive .btn {

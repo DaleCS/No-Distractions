@@ -1,18 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 
 import "./Main.css";
 
-import { Button } from "../reusable";
+import { Button, SwitchButton } from "../reusable";
 
 const CurrentURL = ({
   currentURL,
-  mode,
+  model,
   handlers: {
     handleOnClickAddDomain,
-    handeOnClickAddURL,
-    handleOnClickAddURLAndPaths,
+    handleOnClickAddURL,
+    handleOnClickAddSubpaths,
   },
 }) => {
+  const [targetMode, setTargetMode] = useState(model.mode);
+
+  const handleOnClickSwitchMode = (e) => {
+    e.preventDefault();
+    if (targetMode === "BLACKLIST") {
+      setTargetMode("WHITELIST");
+    } else {
+      setTargetMode("BLACKLIST");
+    }
+  };
+
   return (
     <div className="current-url">
       <input
@@ -22,16 +33,25 @@ const CurrentURL = ({
         className="current-url__url-container"
       />
       <span className="current-url__start-text">ADD this URL's...</span>
-      <Button size="small" onClick={handeOnClickAddURL}>
+      <Button size="small" onClick={handleOnClickAddURL}>
         Specific Address
       </Button>
-      <Button size="small" onClick={handleOnClickAddURLAndPaths}>
+      <Button size="small" onClick={handleOnClickAddSubpaths}>
         Subpaths
       </Button>
       <Button size="small" onClick={handleOnClickAddDomain}>
         Hostname
       </Button>
-      <span className="current-url__end-text">{`...to my ${mode}`}</span>
+      <div className="current-url__end-text-container">
+        <span className="mr-4">...to my</span>
+        <div
+          className="current-url__end-text-btn"
+          onClick={handleOnClickSwitchMode}
+        >
+          <span className="mr-4">{targetMode}</span>
+          <SwitchButton isActive={model.isActive} />
+        </div>
+      </div>
     </div>
   );
 };

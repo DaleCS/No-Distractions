@@ -37,6 +37,11 @@
   width: 20px;
 }
 
+.switch-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .add-url-icon {
   width: 0.75rem;
   height: 0.75rem;

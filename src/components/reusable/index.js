@@ -5,6 +5,7 @@ export { default as Radio } from "./radio/Radio";
 export {
   ListButton,
   PreferencesButton,
+  SwitchButton,
   AddURLButton,
   RemoveURLButton,
 } from "./icon-buttons/icon-buttons";

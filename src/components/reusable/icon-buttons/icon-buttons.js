@@ -60,6 +60,43 @@ export const PreferencesButton = ({ isActive, onClick }) => {
   );
 };
 
+export const SwitchButton = ({ isActive, onClick }) => {
+  return (
+    <div className="switch-icon" onClick={onClick}>
+      <svg
+        className="switch-icon"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line
+          x1="15"
+          y1="33"
+          x2="85"
+          y2="33"
+          stroke={isActive ? "#e74c3c" : "#55efc4"}
+          stroke-width="8"
+        />
+        <polygon
+          fill={isActive ? "#e74c3c" : "#55efc4"}
+          points="70,16 90,33 70,50"
+        />
+        <line
+          x1="15"
+          y1="66"
+          x2="85"
+          y2="66"
+          stroke={isActive ? "#e74c3c" : "#55efc4"}
+          stroke-width="8"
+        />
+        <polygon
+          fill={isActive ? "#e74c3c" : "#55efc4"}
+          points="30,49 10,66 30,83"
+        />
+      </svg>
+    </div>
+  );
+};
+
 export const AddURLButton = ({ isActive, onClick }) => {
   return (
     <div className="icon-btn-small" onClick={onClick}>
