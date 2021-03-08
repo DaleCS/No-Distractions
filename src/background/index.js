@@ -1,3 +1,3 @@
-import model from "./model";
+import API from "./api/api";
 
-window.model = model;
+window.model = API;

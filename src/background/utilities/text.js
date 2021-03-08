@@ -1,4 +1,4 @@
-export const formatRawURLToMatchPattern = (rawURL) => {
+export function formatRawURLToMatchPattern(rawURL) {
   if (rawURL.length === 0) {
     throw "INVALID_URL_STRING";
   }
@@ -26,9 +26,9 @@ export const formatRawURLToMatchPattern = (rawURL) => {
   }
 
   return rawURL;
-};
+}
 
-export const formatMatchPatternToRegExpString = (matchPattern) => {
+export function formatMatchPatternToRegExpString(matchPattern) {
   if (matchPattern.length === 0) {
     throw "INVALID_URL_STRING";
   }
@@ -39,27 +39,9 @@ export const formatMatchPatternToRegExpString = (matchPattern) => {
     matchPattern = matchPattern.substring(0, matchPattern.length - 1) + ".*";
   }
   return matchPattern;
-};
+}
 
-export const formatRawURLToHTTPMatchPattern = (rawURL) => {
-  if (rawURL.length === 0) {
-    throw "INVALID_URL_STRING";
-  }
-
-  if (/.+:\/\/.+/.test(rawURL) === false) {
-    rawURL = "https://" + rawURL;
-  }
-
-  try {
-    new URL(rawURL);
-  } catch (err) {
-    throw "INVALID_URL_STRING";
-  }
-
-  return rawURL;
-};
-
-export const formatInputURLToRegExp = (inputURL) => {
+export function formatRawURLToRegExp(inputURL) {
   let resultingRegExp = "";
 
   if (new RegExp(/\/$/).test(inputURL)) {
@@ -91,13 +73,23 @@ export const formatInputURLToRegExp = (inputURL) => {
   resultingRegExp = `^(${resultingRegExp})$`;
 
   return resultingRegExp;
-};
+}
 
-export const extractHostnameFromURL = function (url) {
+export function extractHostnameFromURL(url) {
   try {
     const hostname = new URL(url).origin + "/";
     return hostname;
   } catch (e) {
     return "";
   }
-};
+}
+
+export function formatURLSubpath(url) {
+  if (url[url.length - 1].localeCompare("/") === 0) {
+    url += "*";
+  } else {
+    url += "/*";
+  }
+
+  return url;
+}

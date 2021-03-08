@@ -20,13 +20,11 @@ const Main = ({ redirectPath, model, dispatch }) => {
 
   const handleOnClickAddURL = (e) => {
     e.preventDefault();
-    console.log("specific address");
     addURL(currentURL, "CUSTOM");
   };
 
   const handleOnClickAddSubpaths = (e) => {
     e.preventDefault();
-    console.log("subpaths");
     addURL(currentURL, "SUBPATHS");
   };
 

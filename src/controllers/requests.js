@@ -9,20 +9,20 @@ import {
 
 let model;
 
-export const getModel = async (dispatch) => {
+export async function getModel(dispatch) {
   try {
     model = await window.browser.extension.getBackgroundPage().model;
 
-    if (model.isActive) {
+    if (model.getBlockerStatus()) {
       dispatch(ACTIVATE_BLOCKER);
     } else {
       dispatch(DEACTIVATE_BLOCKER);
     }
 
-    if (model.mode.localeCompare("WHITELIST") === 0) {
-      dispatch(SET_WHITELIST_MODE);
-    } else {
+    if (model.getMode().localeCompare("BLACKLIST") === 0) {
       dispatch(SET_BLACKLIST_MODE);
+    } else if (model.getMode().localeCompare("WHITELIST") === 0) {
+      dispatch(SET_WHITELIST_MODE);
     }
 
     dispatch(MODEL_LOAD_COMPLETE);
@@ -30,99 +30,93 @@ export const getModel = async (dispatch) => {
     console.log(err);
     dispatch(ERROR_LOADING_MODEL);
   }
-};
+}
 
-export const activateBlocker = (dispatch) => {
+export function activateBlocker(dispatch) {
   if (model && model.activateBlocker()) {
     dispatch(ACTIVATE_BLOCKER);
   }
-};
+}
 
-export const deactivateBlocker = (dispatch) => {
+export function deactivateBlocker(dispatch) {
   if (model && model.deactivateBlocker()) {
     dispatch(DEACTIVATE_BLOCKER);
   }
-};
+}
 
-export const getBlacklist = () => {
+export function getBlacklist() {
   if (model) {
     return model.getBlacklist();
   }
   return [];
-};
+}
 
-export const getWhitelist = () => {
+export function getWhitelist() {
   if (model) {
     return model.getWhitelist();
   }
   return [];
-};
+}
 
-export const getModelBlockerStatus = () => {
+export function getModelBlockerStatus() {
   if (model) {
-    return model.isActive;
+    return model.getBlockerStatus();
   }
   return false;
-};
+}
 
-export const getModelBlockMode = () => {
+export function getModelBlockMode() {
   if (model) {
-    return model.mode;
+    return model.getMode();
   }
   return false;
-};
+}
 
-export const switchBlockMode = (mode, dispatch) => {
+export function switchBlockMode(mode, dispatch) {
   if (!getModelBlockerStatus()) {
-    model.setBlockMode(mode);
-    switch (mode) {
-      case "BLACKLIST": {
-        dispatch(SET_BLACKLIST_MODE);
-        break;
-      }
-      case "WHITELIST": {
-        dispatch(SET_WHITELIST_MODE);
-        break;
-      }
-      default: {
-      }
+    if (mode.localeCompare("BLACKLIST") === 0) {
+      dispatch(SET_BLACKLIST_MODE);
+      model.setMode(mode);
+    } else if (mode.localeCompare("WHITELIST") === 0) {
+      dispatch(SET_WHITELIST_MODE);
+      model.setMode(mode);
     }
   }
-};
+}
 
-export const addURL = (url, scope = "CUSTOM") => {
+export function addURL(url, scope = "CUSTOM") {
   if (model && url && url.length > 0) {
-    return model.addURL(url, model.mode, scope);
+    return model.addURLEntry(url, model.getMode(), scope);
   }
   return false;
-};
+}
 
-export const removeURL = (url) => {
+export function removeURL(url) {
   if (model && url && url.length > 0) {
-    return model.removeFromBlockedURLs(url, model.mode);
+    return model.removeURLEntry(url, model.getMode());
   }
   return false;
-};
+}
 
-export const getRedirectURL = () => {
+export function getRedirectURL() {
   if (model) {
     return model.getRedirectURL();
   }
   return "";
-};
+}
 
-export const setRedirectURL = (url) => {
+export function setRedirectURL(url) {
   if (url && url.length > 0) {
     return model.setRedirectURL(url);
   }
   return false;
-};
+}
 
-export const getURLOfCurrentWindow = async (setCurrentURL) => {
+export async function getURLOfCurrentWindow(setCurrentURL) {
   try {
     const currentURL = await model.getURLOfCurrentWindow();
     setCurrentURL(currentURL);
   } catch (e) {
     setCurrentURL("");
   }
-};
+}
