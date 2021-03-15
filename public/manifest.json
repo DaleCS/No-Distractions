@@ -13,6 +13,6 @@
   "permissions": ["webNavigation", "tabs", "storage"],
 
   "background": {
-    "scripts": ["./background.js"]
+    "scripts": ["./background/index.js"]
   }
 }

@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #121212;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  transition: color 250ms, background-color 250ms;
+  transition-timing-function: ease;
+}
+
+.surface {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: 1fr;
+  width: 80%;
+  max-width: 60rem;
+  height: 75%;
+  max-height: 40rem;
+  user-select: none;
+  -moz-user-select: none;
+  text-align: center;
+  border-radius: 0.5rem;
+}
+
+.active .surface {
+  background-color: rgba(71, 50, 48, 0.12);
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+.inactive .surface {
+  background-color: rgba(85, 239, 196, 0.12);
+  color: #55efc4;
+  border: 1px solid #55efc4;
+}
+
+.surface--msg {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-template-rows: 1fr;
+  row-gap: 1.25rem;
+}
+
+.headline {
+  font-size: 6rem;
+  font-weight: bold;
+  line-height: 6rem;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+}
+
+.btns {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: 1fr;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+}
+
+.back-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background-color 250ms, border 250ms;
+  transition-timing-function: ease;
+  font-weight: bold;
+}
+
+.active .back-btn {
+  background-color: rgba(71, 50, 48, 0.12);
+  border: 1px solid #e74c3c;
+}
+
+.active .back-btn:hover {
+  background-color: #e74c3c;
+  color: #121212;
+}
+
+.inactive .back-btn {
+  background-color: rgba(85, 239, 196, 0.12);
+  border: 1px solid #55efc4;
+}
+
+.inactive .back-btn:hover {
+  background-color: #55efc4;
+  color: #121212;
+}
+
+.no-distractions {
+  position: absolute;
+  justify-self: center;
+  align-self: end;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.border {
+  border: 1px solid white;
+}
+
+.redirected-url {
+  color: #e74c3c;
+  font-family: "Courier New", Courier, monospace;
+  width: 20%;
+  min-width: 218px;
+  background-color: rgba(71, 50, 48, 0.12);
+  padding: 0.5rem;
+  justify-self: center;
+  text-align: center;
+  border: none;
+}
+
+.redirected-url:focus {
+  outline: none;
+}

@@ -29,6 +29,7 @@ const API = {
   getWhitelist,
   getBlacklist,
   getRedirectURL,
+  getRedirectedTabURL,
 };
 
 /**
@@ -240,6 +241,15 @@ function getMode() {
  */
 function getBlockerStatus() {
   return model.isActive;
+}
+
+/**
+ * Gets the URL that led to a redirection in the specific tab.
+ * @param {Number} tabId
+ * @returns Returns the URL that led to a redirection in the specific tab.
+ */
+function getRedirectedTabURL(tabId) {
+  return model.blockedTabs.get(tabId);
 }
 
 export default API;

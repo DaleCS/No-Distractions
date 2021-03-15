@@ -5,7 +5,7 @@ class Store {
     this.blacklist = [];
     this.whitelist = [];
     this.whitelistRegExps = [];
-    this.redirectURL = "";
+    this.redirectURL = browser.runtime.getURL("/blocked.html");
   }
 }
 
@@ -31,8 +31,10 @@ function applyDummyData() {
     "https://mangadex.org/*",
     "https://www.instagram.com/*",
     "https://www.netflix.com/*",
-    "https://www.youtube.com/*",
     "https://twitter.com/*",
+    "https://www.messenger.com/*",
+    "https://www.twitch.tv/*",
+    "https://www.youtube.com/*",
   ];
 
   const dummyWhitelist = [
@@ -49,15 +51,11 @@ function applyDummyData() {
 
   this.blacklist.sort((a, b) => a.inputURL.localeCompare(b.inputURL));
   this.whitelist.sort((a, b) => a.inputURL.localeCompare(b.inputURL));
-
-  this.redirectURL = "https://developer.mozilla.org/en-US/";
 }
 
 const store = new Store();
 // loadFromLocalStorage.call(store);
 
 applyDummyData.call(store);
-
-console.log(store);
 
 export default store;
