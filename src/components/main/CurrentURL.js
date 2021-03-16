@@ -5,7 +5,6 @@ import "./Main.css";
 import { Button, SwitchButton } from "../reusable";
 
 const CurrentURL = ({
-  currentURL,
   model,
   handlers: {
     handleOnClickAddDomain,
@@ -15,21 +14,21 @@ const CurrentURL = ({
 }) => {
   const [targetMode, setTargetMode] = useState(model.mode);
 
-  const handleOnClickSwitchMode = (e) => {
+  function handleOnClickSwitchMode(e) {
     e.preventDefault();
-    if (targetMode === "BLACKLIST") {
+    if (targetMode.localeCompare("BLACKLIST") === 0) {
       setTargetMode("WHITELIST");
-    } else {
+    } else if (targetMode.localeCompare("WHITELIST") === 0) {
       setTargetMode("BLACKLIST");
     }
-  };
+  }
 
   return (
     <div className="current-url">
       <input
         type="text"
         readOnly
-        value={currentURL}
+        value={model.currentURL}
         className="current-url__url-container"
       />
       <span className="current-url__start-text">ADD this URL's...</span>

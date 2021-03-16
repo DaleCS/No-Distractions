@@ -7,116 +7,153 @@ import {
   SET_WHITELIST_MODE,
 } from "../hooks/constants";
 
-let model;
+const port = window.browser.runtime.connect({ name: "popup" });
 
-export async function getModel(dispatch) {
-  try {
-    model = await window.browser.extension.getBackgroundPage().model;
-
-    if (model.getBlockerStatus()) {
-      dispatch(ACTIVATE_BLOCKER);
-    } else {
-      dispatch(DEACTIVATE_BLOCKER);
+export function onMessageClosure(dispatch) {
+  port.onMessage.addListener((message) => {
+    const { response, data } = message;
+    switch (response) {
+      case "GET_MODEL_RESPONSE": {
+        dispatch({
+          type: "INITIALIZE_MODEL",
+          payload: {
+            isActive: data.isActive,
+            mode: data.mode,
+            currentURL: data.currentURL,
+            redirectURL: data.redirectURL,
+          },
+        });
+        break;
+      }
+      case "ACTIVATE_BLOCKER_RESPONSE": {
+        if (data.status) {
+          dispatch({
+            type: "ACTIVATE_BLOCKER",
+          });
+        }
+        break;
+      }
+      case "DEACTIVATE_BLOCKER_RESPONSE": {
+        if (data.status) {
+          dispatch({
+            type: "DEACTIVATE_BLOCKER",
+          });
+        }
+        break;
+      }
+      case "GET_BLACKLIST_RESPONSE":
+      case "GET_WHITELIST_RESPONSE": {
+        dispatch({
+          type: "POPULATE_LIST",
+          payload: data,
+        });
+        break;
+      }
+      case "SET_MODE_RESPONSE": {
+        if (data.status) {
+          if (data.mode.localeCompare("BLACKLIST") === 0) {
+            dispatch({
+              type: "SET_BLACKLIST_MODE",
+            });
+          } else if (data.mode.localeCompare("WHITELIST") === 0) {
+            dispatch({
+              type: "SET_WHITELIST_MODE",
+            });
+          }
+        }
+        break;
+      }
+      case "ADD_URL_RESPONSE":
+      case "REMOVE_URL_RESPONSE": {
+        if (data.status) {
+          if (data.mode.localeCompare("BLACKLIST") === 0) {
+            getBlacklist();
+          } else if (data.mode.localeCompare("WHITELIST") === 0) {
+            getWhitelist();
+          }
+        }
+        break;
+      }
+      default: {
+      }
     }
+  });
+}
 
-    if (model.getMode().localeCompare("BLACKLIST") === 0) {
-      dispatch(SET_BLACKLIST_MODE);
-    } else if (model.getMode().localeCompare("WHITELIST") === 0) {
-      dispatch(SET_WHITELIST_MODE);
-    }
-
-    dispatch(MODEL_LOAD_COMPLETE);
-  } catch (err) {
-    console.log(err);
-    dispatch(ERROR_LOADING_MODEL);
+export function getModel() {
+  if (port) {
+    port.postMessage({ request: "GET_MODEL_REQUEST" });
   }
 }
 
-export function activateBlocker(dispatch) {
-  if (model && model.activateBlocker()) {
-    dispatch(ACTIVATE_BLOCKER);
+export function activateBlocker() {
+  if (port) {
+    port.postMessage({ request: "ACTIVATE_BLOCKER_REQUEST" });
   }
 }
 
-export function deactivateBlocker(dispatch) {
-  if (model && model.deactivateBlocker()) {
-    dispatch(DEACTIVATE_BLOCKER);
+export function deactivateBlocker() {
+  if (port) {
+    port.postMessage({ request: "DEACTIVATE_BLOCKER_REQUEST" });
   }
 }
 
 export function getBlacklist() {
-  if (model) {
-    return model.getBlacklist();
+  if (port) {
+    port.postMessage({ request: "GET_BLACKLIST_REQUEST" });
   }
-  return [];
 }
 
 export function getWhitelist() {
-  if (model) {
-    return model.getWhitelist();
-  }
-  return [];
-}
-
-export function getModelBlockerStatus() {
-  if (model) {
-    return model.getBlockerStatus();
-  }
-  return false;
-}
-
-export function getModelBlockMode() {
-  if (model) {
-    return model.getMode();
-  }
-  return false;
-}
-
-export function switchBlockMode(mode, dispatch) {
-  if (!getModelBlockerStatus()) {
-    if (mode.localeCompare("BLACKLIST") === 0) {
-      dispatch(SET_BLACKLIST_MODE);
-      model.setMode(mode);
-    } else if (mode.localeCompare("WHITELIST") === 0) {
-      dispatch(SET_WHITELIST_MODE);
-      model.setMode(mode);
-    }
+  if (port) {
+    port.postMessage({ request: "GET_WHITELIST_REQUEST" });
   }
 }
 
-export function addURL(url, scope = "CUSTOM") {
-  if (model && url && url.length > 0) {
-    return model.addURLEntry(url, model.getMode(), scope);
+export function getModelStatus() {
+  if (port) {
+    port.postMessage({ request: "GET_STATUS_REQUEST" });
   }
-  return false;
 }
 
-export function removeURL(url) {
-  if (model && url && url.length > 0) {
-    return model.removeURLEntry(url, model.getMode());
+export function setModelMode(mode) {
+  if (port) {
+    port.postMessage({ request: "SET_MODE_REQUEST", data: { mode } });
   }
-  return false;
+}
+
+export function addURL(url, mode, scope) {
+  if (port) {
+    port.postMessage({
+      request: "ADD_URL_REQUEST",
+      data: { url, mode, scope },
+    });
+  }
+}
+
+export function removeURL(url, mode) {
+  if (port) {
+    port.postMessage({ request: "REMOVE_URL_REQUEST", data: { url, mode } });
+  }
 }
 
 export function getRedirectURL() {
-  if (model) {
-    return model.getRedirectURL();
+  if (port) {
+    port.postMessage({ request: "GET_REDIRECT_URL_REQUEST" });
   }
-  return "";
 }
 
 export function setRedirectURL(url) {
-  if (url && url.length > 0) {
-    return model.setRedirectURL(url);
+  if (port) {
+    port.postMessage({
+      request: "SET_REDIRECT_URL_REQUEST ",
+      data: { url },
+    });
   }
-  return false;
 }
 
-export async function getURLOfCurrentWindow(setCurrentURL) {
-  try {
-    const currentURL = await model.getURLOfCurrentWindow();
-    setCurrentURL(currentURL);
-  } catch (e) {
-    setCurrentURL("");
+export function getURLOfCurrentWindow() {
+  if (port) {
+    port.postMessage({ request: "GET_CURRENT_WINDOW_REQUEST" });
   }
 }

@@ -11,7 +11,7 @@ const App = () => {
   const { state: model, dispatch } = useModel();
   const [path, setPath] = useState("/main");
 
-  const redirectPath = (newPath) => {
+  function redirectPath(newPath) {
     switch (newPath) {
       case "/main": {
         setPath("/main");
@@ -29,36 +29,24 @@ const App = () => {
         setPath("/main");
       }
     }
-  };
+  }
 
-  const renderPath = () => {
+  function renderPath() {
     switch (path) {
       case "/main": {
-        return (
-          <Main redirectPath={redirectPath} model={model} dispatch={dispatch} />
-        );
+        return <Main redirectPath={redirectPath} model={model} />;
       }
       case "/list": {
-        return (
-          <List redirectPath={redirectPath} model={model} dispatch={dispatch} />
-        );
+        return <List redirectPath={redirectPath} model={model} />;
       }
       case "/preferences": {
-        return (
-          <Preferences
-            redirectPath={redirectPath}
-            model={model}
-            dispatch={dispatch}
-          />
-        );
+        return <Preferences redirectPath={redirectPath} model={model} />;
       }
       default: {
-        return (
-          <Main redirectPath={redirectPath} model={model} dispatch={dispatch} />
-        );
+        return <Main redirectPath={redirectPath} model={model} />;
       }
     }
-  };
+  }
 
   let renderedPath;
   switch (model.fetchStatus) {

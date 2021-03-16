@@ -7,23 +7,23 @@ import { AddURLButton } from "../reusable";
 const NewURLField = ({ isActive, handleOnAddURL }) => {
   const [urlField, setUrlField] = useState("");
 
-  const handleOnChange = (e) => {
+  function handleOnChange(e) {
     e.preventDefault();
     setUrlField(e.target.value);
-  };
+  }
 
-  const handleOnKeyDown = (e) => {
-    if (e.keyCode === 13 && handleOnAddURL(urlField)) {
+  function handleOnKeyDown(e) {
+    if (e.keyCode === 13) {
+      handleOnAddURL(urlField);
       setUrlField("");
     }
-  };
+  }
 
-  const handleOnClickAdd = (e) => {
+  function handleOnClickAdd(e) {
     e.preventDefault();
-    if (handleOnAddURL(urlField)) {
-      setUrlField("");
-    }
-  };
+    handleOnAddURL(urlField);
+    setUrlField("");
+  }
 
   return (
     <div className="new-url-field">

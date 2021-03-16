@@ -5,11 +5,11 @@ import "./Preferences.css";
 import { SetRedirectURL } from "./";
 import { Button } from "../reusable";
 
-const Preferences = ({ redirectPath, model, dispatch }) => {
-  const handleOnClickBack = (e) => {
+const Preferences = ({ redirectPath, model }) => {
+  function handleOnClickBack(e) {
     e.preventDefault();
     redirectPath("/main");
-  };
+  }
 
   return (
     <div className={`preferences ${model.isActive ? "active" : "inactive"}`}>

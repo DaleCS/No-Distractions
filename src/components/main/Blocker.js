@@ -6,7 +6,6 @@ import { ModeSelector, ListButton, PreferencesButton } from "../reusable";
 
 const Blocker = ({
   model,
-  dispatch,
   handlers: {
     handleOnClickSwitch,
     handleOnClickList,
@@ -15,7 +14,7 @@ const Blocker = ({
 }) => {
   return (
     <div className={`blocker ${model.isActive ? "active" : "inactive"}`}>
-      <ModeSelector model={model} dispatch={dispatch} />
+      <ModeSelector model={model} />
       <div
         className={`blocker__switch ${model.isActive ? "active" : "inactive"}`}
         title={model.isActive ? "Deactivate Blocker" : "Activate Blocker"}

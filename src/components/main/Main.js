@@ -1,62 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import "./Main.css";
 
 import {
   activateBlocker,
   deactivateBlocker,
-  getURLOfCurrentWindow,
   addURL,
 } from "../../controllers/requests";
 
 import { CurrentURL, Blocker } from "./";
 
-const Main = ({ redirectPath, model, dispatch }) => {
-  const [currentURL, setCurrentURL] = useState("");
-
-  useEffect(() => {
-    getURLOfCurrentWindow(setCurrentURL);
-  }, []);
-
-  const handleOnClickAddURL = (e) => {
+const Main = ({ redirectPath, model }) => {
+  function handleOnClickAddURL(e) {
     e.preventDefault();
-    addURL(currentURL, "CUSTOM");
-  };
+    addURL(model.currentURL, model.mode, "CUSTOM");
+  }
 
-  const handleOnClickAddSubpaths = (e) => {
+  function handleOnClickAddSubpaths(e) {
     e.preventDefault();
-    addURL(currentURL, "SUBPATHS");
-  };
+    addURL(model.currentURL, model.mode, "SUBPATHS");
+  }
 
-  const handleOnClickAddDomain = (e) => {
+  function handleOnClickAddDomain(e) {
     e.preventDefault();
-    addURL(currentURL, "HOSTNAME");
-  };
+    addURL(model.currentURL, model.mode, "HOSTNAME");
+  }
 
-  const handleOnClickSwitch = (e) => {
+  function handleOnClickSwitch(e) {
     e.preventDefault();
     if (model.isActive) {
-      deactivateBlocker(dispatch);
+      deactivateBlocker();
     } else {
-      activateBlocker(dispatch);
+      activateBlocker();
     }
-  };
+  }
 
-  const handleOnClickList = (e) => {
+  function handleOnClickList(e) {
     e.preventDefault();
     redirectPath("/list");
-  };
+  }
 
-  const handleOnClickPreferences = (e) => {
+  function handleOnClickPreferences(e) {
     e.preventDefault();
     redirectPath("/preferences");
-  };
+  }
 
   return (
     <div className={`main ${model.isActive ? "active" : "inactive"}`}>
-      {currentURL.length > 0 ? (
+      {model.currentURL.length > 0 ? (
         <CurrentURL
-          currentURL={currentURL}
           model={model}
           handlers={{
             handleOnClickAddDomain,
@@ -69,7 +61,6 @@ const Main = ({ redirectPath, model, dispatch }) => {
       )}
       <Blocker
         model={model}
-        dispatch={dispatch}
         handlers={{
           handleOnClickSwitch,
           handleOnClickList,

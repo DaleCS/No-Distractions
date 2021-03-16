@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import "./List.css";
 
@@ -12,53 +12,29 @@ import {
 import { URL, NewURLField } from "./";
 import { ModeSelector, Button } from "../reusable";
 
-const fetchListSwitch = (mode) => {
-  switch (mode) {
-    case "BLACKLIST": {
-      return getBlacklist();
-    }
-    case "WHITELIST": {
-      return getWhitelist();
-    }
-    default: {
-      return [];
-    }
-  }
-};
-
-const List = ({ redirectPath, model, dispatch }) => {
-  const [list, setList] = useState([]);
-
+const List = ({ redirectPath, model }) => {
   useEffect(() => {
-    setList(fetchListSwitch(model.mode));
+    if (model.mode.localeCompare("BLACKLIST") === 0) {
+      getBlacklist();
+    } else if (model.mode.localeCompare("WHITELIST") === 0) {
+      getWhitelist();
+    }
   }, [model.mode]);
 
-  const handleOnClickBack = (e) => {
+  function handleOnClickBack(e) {
     e.preventDefault();
     redirectPath("/main");
-  };
+  }
 
-  const handleOnAddURL = (url) => {
-    const result = addURL(url);
-    if (result && (model.mode === "BLACKLIST" || model.mode === "WHITELIST")) {
-      setList(fetchListSwitch(model.mode));
-      return true;
-    }
-    return false;
-  };
+  function handleOnAddURL(url) {
+    addURL(url, model.mode, "CUSTOM");
+  }
 
-  const handleOnRemoveUrl = (url) => {
-    if (
-      removeURL(url) &&
-      (model.mode === "BLACKLIST" || model.mode === "WHITELIST")
-    ) {
-      setList(fetchListSwitch(model.mode));
-      return true;
-    }
-    return false;
-  };
+  function handleOnRemoveUrl(url) {
+    removeURL(url, model.mode);
+  }
 
-  let listMarkup = list.map((url) => {
+  let listMarkup = model.list.map((url) => {
     return (
       <URL
         url={url}
@@ -89,7 +65,7 @@ const List = ({ redirectPath, model, dispatch }) => {
 
   return (
     <div className={`list ${model.isActive ? "active" : "inactive"}`}>
-      <ModeSelector model={model} dispatch={dispatch} />
+      <ModeSelector model={model} />
       <div className={"desc-and-url-list"}>
         <div className={"desc"}>
           <span className="desc__mode">{desc.mode}</span>

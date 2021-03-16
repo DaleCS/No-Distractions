@@ -2,22 +2,22 @@ import React from "react";
 
 import "./ModeSelector.css";
 
-import { switchBlockMode } from "../../../controllers/requests";
+import { setModelMode } from "../../../controllers/requests";
 
-const ModeSelector = ({ model, dispatch, className }) => {
-  const handleOnClickBlacklist = (e) => {
+const ModeSelector = ({ model, className }) => {
+  function handleOnClickBlacklist(e) {
     e.preventDefault();
     if (model.mode.localeCompare("BLACKLIST") !== 0) {
-      switchBlockMode("BLACKLIST", dispatch);
+      setModelMode("BLACKLIST");
     }
-  };
+  }
 
-  const handleOnClickWhitelist = (e) => {
+  function handleOnClickWhitelist(e) {
     e.preventDefault();
     if (model.mode.localeCompare("WHITELIST") !== 0) {
-      switchBlockMode("WHITELIST", dispatch);
+      setModelMode("WHITELIST");
     }
-  };
+  }
 
   return (
     <div className={`mode-selector ${className}`}>

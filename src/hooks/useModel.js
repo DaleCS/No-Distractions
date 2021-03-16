@@ -1,15 +1,29 @@
 import { useEffect, useReducer } from "react";
 
-import { getModel } from "../controllers/requests";
+import { onMessageClosure, getModel } from "../controllers/requests";
 
 const initialState = {
   fetchStatus: "LOADING",
   isActive: false,
-  mode: "",
+  mode: "BLACKLIST",
+  currentURL: "",
+  redirectURL: "",
+  list: [],
 };
 
 const reducer = (state, action) => {
-  switch (action) {
+  const { type, payload } = action;
+  switch (type) {
+    case "INITIALIZE_MODEL": {
+      return {
+        ...state,
+        fetchStatus: "COMPLETE",
+        isActive: payload.isActive,
+        mode: payload.mode,
+        currentURL: payload.currentURL,
+        redirectURL: payload.redirectURL,
+      };
+    }
     case "ACTIVATE_BLOCKER": {
       return { ...state, isActive: true };
     }
@@ -21,6 +35,9 @@ const reducer = (state, action) => {
     }
     case "SET_WHITELIST_MODE": {
       return { ...state, mode: "WHITELIST" };
+    }
+    case "POPULATE_LIST": {
+      return { ...state, list: payload.list };
     }
     case "LOADING_MODEL": {
       return { ...state, fetchStatus: "LOADING" };
@@ -41,7 +58,8 @@ const useModel = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    getModel(dispatch);
+    onMessageClosure(dispatch);
+    getModel();
   }, []);
 
   return { state, dispatch };

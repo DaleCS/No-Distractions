@@ -11,33 +11,33 @@ const SetRedirectURL = () => {
   const [choice, setChoice] = useState(0);
   const [invalidURLAnims, setInvalidURLAnims] = useState(false);
 
-  const handleOnClickDefault = (e) => {
+  function handleOnClickDefault(e) {
     setChoice(0);
-  };
+  }
 
-  const handleOnClickCustomURL = (e) => {
+  function handleOnClickCustomURL(e) {
     if (!setRedirectURL(urlField)) {
       setChoice(0);
       setInvalidURLAnims(true);
     } else {
       setChoice(1);
     }
-  };
+  }
 
-  const handleOnChange = (e) => {
+  function handleOnChange(e) {
     setURLField(e.target.value);
-  };
+  }
 
-  const handleOnBlur = (e) => {
+  function handleOnBlur(e) {
     if (choice === 1 && !setRedirectURL(urlField)) {
       setChoice(0);
       setInvalidURLAnims(true);
     }
-  };
+  }
 
-  const handleOnAnimationEnd = (e) => {
+  function handleOnAnimationEnd(e) {
     setInvalidURLAnims(false);
-  };
+  }
 
   return (
     <div className="set-redirect-url">
