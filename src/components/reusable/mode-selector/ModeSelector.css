@@ -4,6 +4,8 @@
   align-items: center;
   align-content: center;
   width: 100%;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .mode {

@@ -39,6 +39,8 @@
   align-content: flex-start;
   padding: 0.5rem;
   transition: border-bottom 250ms ease, color 250ms ease;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .inactive .desc {

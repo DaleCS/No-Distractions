@@ -64,6 +64,8 @@
 
 .current-url__start-text {
   justify-self: start;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .current-url__end-text-container {
@@ -72,6 +74,8 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .current-url__end-text-btn {
@@ -109,6 +113,8 @@
   transition: border-color 250ms ease, background-color 250ms ease;
   box-sizing: border-box;
   margin: 0;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .blocker.inactive {
