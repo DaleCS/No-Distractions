@@ -8,7 +8,7 @@ import {
   addURL,
 } from "../../controllers/requests";
 
-import { CurrentURL, Blocker } from "./";
+import { CurrentURL, Blocker, SessionStats } from "./";
 
 const Main = ({ redirectPath, model }) => {
   function handleOnClickAddURL(e) {
@@ -40,13 +40,9 @@ const Main = ({ redirectPath, model }) => {
     redirectPath("/list");
   }
 
-  function handleOnClickPreferences(e) {
-    e.preventDefault();
-    redirectPath("/preferences");
-  }
-
   return (
     <div className={`main ${model.isActive ? "active" : "inactive"}`}>
+      <SessionStats model={model} />
       {model.currentURL.length > 0 ? (
         <CurrentURL
           model={model}
@@ -57,14 +53,13 @@ const Main = ({ redirectPath, model }) => {
           }}
         />
       ) : (
-        <div />
+        <></>
       )}
       <Blocker
         model={model}
         handlers={{
           handleOnClickSwitch,
           handleOnClickList,
-          handleOnClickPreferences,
         }}
       />
     </div>

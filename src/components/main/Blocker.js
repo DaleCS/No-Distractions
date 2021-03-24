@@ -2,15 +2,11 @@ import React from "react";
 
 import "./Main.css";
 
-import { ModeSelector, ListButton, PreferencesButton } from "../reusable";
+import { ModeSelector, ListButton } from "../reusable";
 
 const Blocker = ({
   model,
-  handlers: {
-    handleOnClickSwitch,
-    handleOnClickList,
-    handleOnClickPreferences,
-  },
+  handlers: { handleOnClickSwitch, handleOnClickList },
 }) => {
   return (
     <div className={`blocker ${model.isActive ? "active" : "inactive"}`}>
@@ -24,10 +20,6 @@ const Blocker = ({
       </div>
       <div className="blocker__options-container">
         <ListButton isActive={model.isActive} onClick={handleOnClickList} />
-        <PreferencesButton
-          isActive={model.isActive}
-          onClick={handleOnClickPreferences}
-        />
       </div>
     </div>
   );

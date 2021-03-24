@@ -9,6 +9,8 @@ const initialState = {
   currentURL: "",
   redirectURL: "",
   list: [],
+  numOfRedirections: 0,
+  numOfActivations: 0,
 };
 
 const reducer = (state, action) => {
@@ -22,6 +24,8 @@ const reducer = (state, action) => {
         mode: payload.mode,
         currentURL: payload.currentURL,
         redirectURL: payload.redirectURL,
+        numOfRedirections: payload.numOfRedirections,
+        numOfActivations: payload.numOfActivations,
       };
     }
     case "ACTIVATE_BLOCKER": {
@@ -38,6 +42,13 @@ const reducer = (state, action) => {
     }
     case "POPULATE_LIST": {
       return { ...state, list: payload.list };
+    }
+    case "UPDATE_STATISTICS": {
+      return {
+        ...state,
+        numOfRedirections: payload.numOfRedirections,
+        numOfActivations: payload.numOfActivations,
+      };
     }
     case "LOADING_MODEL": {
       return { ...state, fetchStatus: "LOADING" };

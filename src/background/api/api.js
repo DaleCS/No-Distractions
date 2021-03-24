@@ -30,6 +30,8 @@ const API = {
   getBlacklist,
   getRedirectURL,
   getRedirectedTabURL,
+  getNumOfRedirections,
+  getNumOfActivations,
 };
 
 /**
@@ -38,12 +40,12 @@ const API = {
  */
 function activateBlocker() {
   if (!model.isActive) {
+    model.numOfActivations++;
     if (model.mode.localeCompare("BLACKLIST") === 0) {
       model.isActive = true;
 
       blockExistingBlacklistedTabs();
       addBlacklistListeners();
-
       return true;
     } else if (model.mode.localeCompare("WHITELIST") === 0) {
       model.isActive = true;
@@ -52,7 +54,6 @@ function activateBlocker() {
 
       blockExistingNonWhitelistedTabs();
       addWhitelistListeners();
-
       return true;
     }
   }
@@ -250,6 +251,22 @@ function getBlockerStatus() {
  */
 function getRedirectedTabURL(tabId) {
   return model.blockedTabs.get(tabId);
+}
+
+/**
+ * Gets the number of redirections in the current window session.
+ * @returns Returns the number of redirections in the current window session.
+ */
+function getNumOfRedirections() {
+  return model.numOfRedirections;
+}
+
+/**
+ * Gets the number of activations in the current window session.
+ * @returns Returns the number of activations in the current window session.
+ */
+function getNumOfActivations() {
+  return model.numOfActivations;
 }
 
 export default API;

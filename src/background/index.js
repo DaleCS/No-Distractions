@@ -55,6 +55,8 @@ async function onMessageFromPopup(message) {
             mode: API.getMode(),
             currentURL: url,
             redirectURL: API.getRedirectURL(),
+            numOfRedirections: API.getNumOfRedirections(),
+            numOfActivations: API.getNumOfActivations(),
           },
         });
       } catch (e) {
@@ -75,6 +77,8 @@ async function onMessageFromPopup(message) {
         response: "ACTIVATE_BLOCKER_RESPONSE",
         data: { status: API.activateBlocker() },
       });
+
+      setTimeout(updateListeners, 500);
       break;
     }
     case "DEACTIVATE_BLOCKER_REQUEST": {
@@ -126,4 +130,14 @@ async function onMessageFromPopup(message) {
       console.error("ERROR: Unhandled message from background scripts");
     }
   }
+}
+
+function updateListeners() {
+  portFromPopup.postMessage({
+    response: "UPDATE_STATISTICS_REQUEST",
+    data: {
+      numOfRedirections: API.getNumOfRedirections(),
+      numOfActivations: API.getNumOfActivations(),
+    },
+  });
 }

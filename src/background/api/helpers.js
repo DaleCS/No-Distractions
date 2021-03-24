@@ -12,6 +12,7 @@ import URLEntry from "../models/url-entry";
 
 // UTILITIES
 function redirect(tabId, url) {
+  model.numOfRedirections++;
   model.tabBuffer.add(tabId);
   model.blockedTabs.set(tabId, url);
   browser.tabs.update(tabId, { url: store.redirectURL });

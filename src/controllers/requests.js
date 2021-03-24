@@ -1,12 +1,3 @@
-import {
-  MODEL_LOAD_COMPLETE,
-  ERROR_LOADING_MODEL,
-  ACTIVATE_BLOCKER,
-  DEACTIVATE_BLOCKER,
-  SET_BLACKLIST_MODE,
-  SET_WHITELIST_MODE,
-} from "../hooks/constants";
-
 const port = window.browser.runtime.connect({ name: "popup" });
 
 export function onMessageClosure(dispatch) {
@@ -21,6 +12,8 @@ export function onMessageClosure(dispatch) {
             mode: data.mode,
             currentURL: data.currentURL,
             redirectURL: data.redirectURL,
+            numOfRedirections: data.numOfRedirections,
+            numOfActivations: data.numOfActivations,
           },
         });
         break;
@@ -72,6 +65,16 @@ export function onMessageClosure(dispatch) {
             getWhitelist();
           }
         }
+        break;
+      }
+      case "UPDATE_STATISTICS_REQUEST": {
+        dispatch({
+          type: "UPDATE_STATISTICS",
+          payload: {
+            numOfRedirections: data.numOfRedirections,
+            numOfActivations: data.numOfActivations,
+          },
+        });
         break;
       }
       default: {
