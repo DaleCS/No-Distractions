@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
-import { CircularProgress } from "@material-ui/core";
-
 import "./App.css";
 
 import { Main, List, Preferences } from "./components";
+import { Loading } from "./components/reusable";
 import useModel from "./hooks/useModel";
 
 const App = () => {
@@ -51,7 +50,7 @@ const App = () => {
   let renderedPath;
   switch (model.fetchStatus) {
     case "LOADING": {
-      renderedPath = <CircularProgress />;
+      renderedPath = <Loading />;
       break;
     }
     case "COMPLETE": {
