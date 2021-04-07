@@ -2,7 +2,7 @@ import {
   formatInputURLToRegExp,
   formatRawURLToMatchPattern,
   extractHostnameFromURL,
-} from "./text";
+} from "../utilities/text";
 
 describe("Testing formatInputURLToRegExp(inputURL)...", () => {
   const dummyCases = [

@@ -1,42 +1,24 @@
 {
   "name": "no-distractions",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.0"
-  },
+  "version": "1.0.0",
+  "description": "A simple web blocker that redirects your browser when you try to visit distracting websites",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && npm run build:webpack",
-    "build:webpack": "webpack --config prod.config.js",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "install": "npm install --prefix ./popup",
+    "build": "rm -r ./build && npm run build:popup && npm run build:background & npm run build:extension-pages & cp ./manifest.json ./build",
+    "build:popup": "npm run build --prefix ./popup",
+    "build:background": "npm run build:webpack --prefix ./popup",
+    "build:extension-pages": "cp -r ./extension-pages ./build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaleCS/No-Distractions.git"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "author": "DaleCS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DaleCS/No-Distractions/issues"
   },
-  "devDependencies": {
-    "webpack-cli": "^4.5.0"
-  }
+  "homepage": "https://github.com/DaleCS/No-Distractions#readme"
 }

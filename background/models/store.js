@@ -5,7 +5,7 @@ class Store {
     this.blacklist = [];
     this.whitelist = [];
     this.whitelistRegExps = [];
-    this.redirectURL = browser.runtime.getURL("/blocked.html");
+    this.redirectURL = browser.runtime.getURL("/extension-pages/blocked.html");
   }
 }
 
